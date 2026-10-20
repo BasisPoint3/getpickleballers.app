@@ -2,8 +2,9 @@
 
 The website for **Pickleballers**, the iPhone and Apple Watch app in the
 `pickleball-app` repo checked out beside this one. The plan for this site and
-for the daily guide loop is `../pickleball-app/docs/WEBSITE.md`; read it
-first. Decisions are numbered there too (D-114 to D-116).
+for the daily guide loop is [`docs/PLAN.md`](docs/PLAN.md); read it first.
+The app-side half, and the decisions D-114 to D-116, are in
+`../pickleball-app/docs/WEBSITE.md`.
 
 ## What's here
 
@@ -15,6 +16,7 @@ first. Decisions are numbered there too (D-114 to D-116).
 | `src/consts.ts` | The site's name, the support address, the waitlist form and App Store links. Empty strings mean "not yet" |
 | `public/join.html`, `public/live.html`, `public/js/`, `public/css/` | **The app's own pages, copied byte for byte** from `pickleball-app`'s git history (the commit before D-99). The app shares `/join#<token>` and `/live#<token>`. Their spec is `pickleball-app/docs/LIVE_LINK.md` and D-58; change them only with that doc |
 | `public/CNAME`, `public/robots.txt` | GitHub Pages' custom domain and the crawl rules |
+| `docs/PLAN.md` | The plan: the site, the daily guide loop, the template, the phases, the setup steps |
 | `seo/seed-queries.md` | The guide loop's phase-one list |
 | `.github/workflows/deploy.yml` | Builds on every push and PR; publishes `main` to GitHub Pages |
 

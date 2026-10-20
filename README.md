@@ -10,5 +10,5 @@ npm install
 npm run dev
 ```
 
-The plan, and the daily guide loop that writes to `src/content/guides/`, is in
-the app's repo: `pickleball-app/docs/WEBSITE.md`.
+The plan, and the daily guide loop that writes to `src/content/guides/`, is
+[`docs/PLAN.md`](docs/PLAN.md).
