@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live — Pickleballers</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#1B1F3B" />
+  <link rel="stylesheet" href="css/live.css" />
+  <link rel="icon" href="icons/icon-192.png" />
+</head>
+<body>
+  <!--
+    The live link (docs/LIVE_LINK.md, D-96). The app shares live.html#<token>;
+    this page shows that group's live game on any screen, and the leaderboard
+    between games. It has no sign-in: it reads live_board(token) and listens
+    on the live:<token> Realtime channel with the publishable key. The token
+    stays after the #, so it never reaches this server. Not part of the PWA,
+    and not linked from it.
+  -->
+  <header class="top">
+    <h1 id="group-name" class="group-name"></h1>
+    <div id="status" class="status"></div>
+  </header>
+  <main id="main" class="main"></main>
+  <footer class="foot">
+    <span class="wordmark">Pickleballers</span>
+    <span class="get-app" id="get-app">Get the app</span>
+    <!-- On a screen big enough: a QR code to scan from across the room. -->
+    <aside class="qr" id="qr" hidden>
+      <div class="qr-code" id="qr-code"></div>
+      <div class="qr-caption" id="qr-caption"></div>
+    </aside>
+  </footer>
+  <div id="overlay" class="overlay" hidden><div class="overlay-card" id="overlay-text"></div></div>
+  <script src="js/qr.js"></script>
+  <script src="js/live.js"></script>
+</body>
+</html>

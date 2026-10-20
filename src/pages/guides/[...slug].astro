@@ -1,0 +1,27 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import Guide from '../../layouts/Guide.astro';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((guide) => {
+    // Related: the newest three that share a tag, then any others.
+    const others = guides.filter((g) => g.id !== guide.id);
+    const sharing = others.filter((g) => g.data.tags.some((t) => guide.data.tags.includes(t)));
+    const rest = others.filter((g) => !sharing.includes(g));
+    const related = [...sharing, ...rest].slice(0, 3);
+    return { params: { slug: guide.id }, props: { guide, related } };
+  });
+}
+
+interface Props {
+  guide: CollectionEntry<'guides'>;
+  related: CollectionEntry<'guides'>[];
+}
+const { guide, related } = Astro.props;
+const { Content } = await render(guide);
+---
+
+<Guide guide={guide} related={related}>
+  <Content />
+</Guide>

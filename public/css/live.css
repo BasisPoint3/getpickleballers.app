@@ -1,0 +1,330 @@
+/* The live link page: the app's scoreboard with the lights down, sized for a
+   screen across the room. Ink background, Ball for the server, Court Blue and
+   Coral for the teams (docs/DESIGN.md). Not used by the prototype's pages. */
+:root {
+  --ink: #1B1F3B;
+  --ink-2: #262B4F;
+  --paper: #ECEEF8;
+  --muted: rgba(236, 238, 248, 0.62);
+  --ball: #D9F24F;
+  --team-a: #4A7DF0;
+  --team-b: #F06A45;
+  --font: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.top, .foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(10px, 2vh, 24px) clamp(16px, 3vw, 48px);
+}
+.group-name {
+  margin: 0;
+  font-size: clamp(18px, 3.2vh, 40px);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(14px, 2.4vh, 28px);
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.status.live { color: var(--team-b); }
+.status .clock { color: var(--paper); font-variant-numeric: tabular-nums; margin-left: 0.4em; }
+.board-top .clock { font-variant-numeric: tabular-nums; }
+.status.live::before {
+  content: "";
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  background: var(--team-b);
+  animation: breathe 1.2s ease-in-out infinite alternate;
+}
+@keyframes breathe { to { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .status.live::before { animation: none; } }
+
+.foot {
+  font-size: clamp(12px, 2vh, 22px);
+  color: var(--muted);
+}
+.wordmark { font-weight: 800; letter-spacing: 0.02em; }
+.get-app { font-weight: 600; }
+
+.main {
+  flex: 1;
+  min-height: 0;
+  padding: 0 clamp(16px, 3vw, 48px);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Boards: one fills the screen, two sit side by side on a wide screen. */
+/* Stacked boards take their natural height and the page scrolls; one board
+   fills the screen. */
+.boards {
+  flex: 1 0 auto;
+  display: grid;
+  gap: clamp(12px, 2vw, 32px);
+  grid-template-columns: 1fr;
+}
+.boards.one { grid-template-rows: 1fr; }
+/* Two across on anything wider than a phone, fitted to the screen; four is
+   two rows of two. */
+@media (min-width: 700px) {
+  .boards.two, .boards.four { grid-template-columns: 1fr 1fr; flex: 1 1 0; min-height: 0; }
+  .boards.two { grid-template-rows: minmax(0, 1fr); }
+  .boards.four { grid-auto-rows: minmax(0, 1fr); }
+  .boards.two .board, .boards.four .board { overflow: hidden; }
+}
+@media (max-width: 699px) {
+  .boards.two .board, .boards.four .board { --scale: 0.85; }
+}
+.board {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(8px, 1.6vh, 20px);
+  min-height: 0;
+  padding: clamp(12px, 2vh, 28px);
+  border-radius: 24px;
+  background: var(--ink-2);
+}
+.board { --scale: 1; }
+.boards.two .board { --scale: 0.72; }
+.boards.four .board { --scale: 0.5; gap: clamp(4px, 0.8vh, 10px); padding: clamp(8px, 1.2vh, 16px); }
+.boards.four .teams { gap: clamp(4px, 0.6vh, 8px); }
+.boards.four .team { padding: 0.25em 0.6em; }
+.boards.four .board-top { min-height: 0; }
+
+.board-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 12px;
+  min-height: 1.4em;
+  font-size: calc(clamp(14px, 2.6vh, 30px) * var(--scale));
+  font-weight: 700;
+  color: var(--muted);
+}
+.board-top > span { white-space: nowrap; }
+.board-top .games b { font-weight: 800; }
+.board-top .games .a { color: var(--team-a); }
+.board-top .games .b { color: var(--team-b); }
+.tag {
+  padding: 0.15em 0.7em;
+  border-radius: 999px;
+  background: var(--ball);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.call {
+  text-align: center;
+  /* Tall screens are bounded by height, phones by width: "11-10-2" has to fit on one line. */
+  font-size: min(calc(clamp(72px, 26vh, 300px) * var(--scale)), calc(19vw * var(--scale)));
+  font-weight: 900;
+  white-space: nowrap;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  /* Proportional digits: tabular ones leave "11-3" with gaps around the 1s. */
+  font-variant-numeric: proportional-nums;
+}
+.final .call { font-size: min(calc(clamp(56px, 20vh, 220px) * var(--scale)), calc(19vw * var(--scale))); }
+
+.server {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  font-size: calc(clamp(18px, 3.4vh, 40px) * var(--scale));
+  font-weight: 700;
+  min-height: 1.4em;
+}
+.ball {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+  background: var(--ball);
+  box-shadow: 0 0 0.35em rgba(217, 242, 79, 0.55);
+  flex: none;
+}
+
+.teams { display: flex; flex-direction: column; gap: clamp(6px, 1vh, 12px); }
+.team {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.5vw, 24px);
+  padding: calc(clamp(10px, 1.8vh, 22px) * var(--scale)) calc(clamp(14px, 2vw, 28px) * var(--scale));
+  border-radius: 18px;
+  background: rgba(236, 238, 248, 0.05);
+  font-size: calc(clamp(18px, 4.2vh, 52px) * var(--scale));
+  transition: background 0.2s;
+}
+.team.a.serving { background: rgba(74, 125, 240, 0.22); }
+.team.b.serving { background: rgba(240, 106, 69, 0.22); }
+.team.won { outline: 3px solid var(--ball); }
+/* A team's names stack, one per line, so each reads on its own. */
+.names { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1em; }
+.name {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+.team.serving .name { font-weight: 700; }
+/* The Ball's slot is always there, so names line up whoever is serving. */
+.name .slot { flex: none; width: 0.7em; display: flex; align-items: center; }
+.name .ball { width: 0.55em; height: 0.55em; }
+.points {
+  flex: none;
+  min-width: 1.6em;
+  text-align: right;
+  font-size: 1.5em;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.team.a .points { color: var(--team-a); }
+.team.b .points { color: var(--team-b); }
+
+.more {
+  text-align: center;
+  color: var(--muted);
+  font-size: clamp(14px, 2.4vh, 28px);
+  font-weight: 600;
+  padding: 8px 0;
+}
+
+/* Standings between games: as many rows as fit, in the biggest type that fits. */
+.standings {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.standings-title {
+  flex: none;
+  font-size: clamp(14px, 2.4vh, 28px);
+  font-weight: 700;
+  color: var(--muted);
+  padding: 0 0 clamp(6px, 1vh, 14px);
+}
+.rows { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(4px, 0.8vh, 10px); overflow: hidden; }
+.row {
+  flex: none;
+  display: grid;
+  grid-template-columns: 2.2em 1fr auto auto;
+  align-items: center;
+  gap: clamp(10px, 1.5vw, 28px);
+  padding: calc(clamp(6px, 1.2vh, 16px)) clamp(14px, 2vw, 28px);
+  border-radius: 14px;
+  background: rgba(236, 238, 248, 0.05);
+  font-size: clamp(16px, 3vh, 40px);
+}
+.row.first { background: rgba(217, 242, 79, 0.14); }
+.rank { font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
+.row.first .rank { color: var(--ball); }
+.row .name { font-weight: 600; }
+.number { font-weight: 900; font-variant-numeric: tabular-nums; min-width: 2.6em; text-align: right; }
+.number.up { color: var(--ball); }
+.number.down { color: var(--team-b); }
+.record { color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; min-width: 3em; text-align: right; }
+
+/* Messages: no game, a dead link, not set up. */
+.message {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5em;
+  padding: 24px;
+  font-size: clamp(18px, 3.4vh, 42px);
+  font-weight: 700;
+}
+.message p { margin: 0; }
+.message .sub { font-size: 0.6em; font-weight: 500; color: var(--muted); max-width: 32em; }
+.message code { font-family: ui-monospace, Menlo, monospace; font-size: 0.8em; color: var(--paper); }
+
+/* The QR code, in the footer's right corner, on screens with room for it.
+   It's part of the footer, so the boards above make room for it. */
+.qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: clamp(96px, 15vh, 200px);
+}
+body.has-qr .foot { align-items: flex-end; }
+.qr[hidden] { display: none; }
+.qr-code { width: 100%; border-radius: 10px; overflow: hidden; background: #fff; }
+.qr-code svg { display: block; width: 100%; height: auto; }
+.qr-caption {
+  font-size: clamp(11px, 1.7vh, 18px);
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Reconnecting, over whatever was last shown. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(27, 31, 59, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.overlay[hidden] { display: none; }
+.overlay-card {
+  padding: 0.6em 1.2em;
+  border-radius: 999px;
+  background: var(--ink-2);
+  font-size: clamp(16px, 2.8vh, 34px);
+  font-weight: 700;
+}
+
+/* Phones: a team's two names stack, so neither is cut. */
+@media (max-width: 600px) {
+  .name { font-size: 0.85em; }
+  .board { padding: 14px; gap: 10px; }
+}
+@media (max-width: 600px) {
+  .top { flex-direction: column; align-items: flex-start; gap: 2px; }
+}
+/* The QR's caption says it; the footer's doesn't need to. */
+body.has-qr .get-app { display: none; }

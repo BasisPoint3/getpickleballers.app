@@ -1,0 +1,1800 @@
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+/* `hidden` always wins, even over components that set their own display. */
+[hidden] { display: none !important; }
+
+:root {
+  /* Apple system colors, after prototypes/app-v2/css/ios.css. Raw system
+     values first, then the app roles they fill; the dark block below swaps
+     only the raw values and the few roles that need a different shade. */
+  color-scheme: light dark;
+
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --blue: #007AFF;
+  --green: #34C759;
+  --red: #FF3B30;
+  --orange: #FF9500;
+  --yellow: #FFCC00;
+  --gray: #AEAEB2;
+
+  --bg: #F2F2F7;              /* systemGroupedBackground */
+  --surface: #FFFFFF;         /* secondarySystemGroupedBackground */
+  --border: #E5E5EA;
+  --separator: rgba(60, 60, 67, 0.29);
+  --text: #000000;
+  --text-muted: #6C6C70;
+  --fill: rgba(120, 120, 128, 0.16);
+  --segment-active: #FFFFFF;
+  --bar-bg: rgba(249, 249, 249, 0.94);
+  --sk-sweep: rgba(255, 255, 255, 0.7);
+
+  --accent: var(--blue);
+  --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
+  --link: var(--blue);
+
+  /* Orange is the highlight fill; text on light backgrounds uses Apple's
+     accessible orange because #FF9500 is too light to read on white. */
+  --highlight: var(--orange);
+  --highlight-text: #C93400;
+
+  /* Status colors: the system hues are the fills/dots, the deeper shades
+     carry text, keeping labels readable on white. */
+  --success: #248A3D;
+  --success-fill: var(--green);
+  --success-bg: color-mix(in srgb, var(--green) 14%, transparent);
+  --success-border: color-mix(in srgb, var(--green) 35%, transparent);
+  --danger: #D70015;
+  --danger-fill: var(--red);
+  --danger-bg: color-mix(in srgb, var(--red) 12%, transparent);
+
+  --radius: 10px;
+  --shadow-sm: none;
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --blue: #0A84FF;
+    --green: #30D158;
+    --red: #FF453A;
+    --orange: #FF9F0A;
+    --yellow: #FFD60A;
+    --gray: #636366;
+
+    --bg: #000000;
+    --surface: #1C1C1E;
+    --border: #38383A;
+    --separator: rgba(84, 84, 88, 0.6);
+    --text: #FFFFFF;
+    --text-muted: #8E8E93;
+    --fill: rgba(120, 120, 128, 0.32);
+    --segment-active: #636366;
+    --bar-bg: rgba(22, 22, 23, 0.94);
+    --sk-sweep: rgba(255, 255, 255, 0.06);
+
+    --highlight-text: var(--orange);
+    --success: var(--green);
+    --danger: var(--red);
+    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.6);
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 16px;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* League name sits above the large title, like a small eyebrow label. */
+.league-banner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 14px 20px 0;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+header.top-bar {
+  padding: 2px 20px 8px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* iOS large title. */
+header.top-bar h1 {
+  /* 34pt like iOS, easing down on narrow phones so titles fit beside the header buttons. */
+  font-size: clamp(28px, 7.6vw, 34px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: 0.01em;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+header.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.settings-link {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--accent);
+  padding: 6px;
+  line-height: 1;
+}
+
+.admin-mode-toggle {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 750;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-mode-toggle.unlocked {
+  background: var(--success-bg);
+  border-color: var(--success-border);
+  color: var(--success);
+}
+
+.admin-lock-icon { font-size: 0.88rem; }
+
+body:not(.admin-unlocked) .admin-only,
+body:not(.admin-unlocked) .admin-only-section,
+body:not(.admin-unlocked) .admin-nav-item,
+body:not(.admin-unlocked) .admin-settings-link {
+  display: none !important;
+}
+
+body.admin-unlocked .locked-only { display: none !important; }
+
+.admin-required-card {
+  padding: 26px 20px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-required-card h2 {
+  margin: 8px 0 6px;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1.08rem;
+  font-weight: 700;
+  padding: 0;
+}
+
+.admin-required-card p {
+  margin: 0 auto;
+  max-width: 330px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.admin-required-card .btn { max-width: 280px; }
+.admin-required-icon { font-size: 1.5rem; }
+
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 8px 20px 100px;
+}
+
+/* iOS grouped-list section header. */
+h2 {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin: 24px 0 7px;
+  padding: 0 16px;
+}
+
+/* Bottom tab bar, after prototypes/app-v2: translucent bar, filled icons,
+   and a floating add button in the middle whose menu js/nav.js builds. */
+nav.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  background: var(--bar-bg);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-top: 0.5px solid var(--separator);
+  padding: 7px env(safe-area-inset-right) calc(4px + env(safe-area-inset-bottom)) env(safe-area-inset-left);
+  z-index: 10;
+}
+
+nav.tab-bar a {
+  flex: 1;
+  max-width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0 2px 2px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+nav.tab-bar a svg {
+  width: 26px;
+  height: 26px;
+}
+
+nav.tab-bar a.active { color: var(--accent); }
+
+.tab-add {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  margin-top: -24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font: inherit;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 40%, transparent), 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+.tab-add svg { width: 26px; height: 26px; transition: transform 0.25s; }
+.tab-add:active { transform: scale(0.94); }
+.tab-add-label { display: none; }
+body.add-open .tab-add svg { transform: rotate(45deg); }
+
+.add-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.add-menu {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom) + 76px);
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  transform: translate(-50%, 12px) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+body.add-open .add-scrim,
+body.add-open .add-menu { opacity: 1; pointer-events: auto; }
+body.add-open .add-menu { transform: translate(-50%, 0); }
+
+.add-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 200px;
+  padding: 12px 18px 12px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+.add-option:active { opacity: 0.7; }
+.add-option .icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  flex: none;
+}
+.add-option .icon svg { width: 18px; height: 18px; }
+.add-option small { display: block; font-size: 12px; font-weight: 400; color: var(--text-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-add, .tab-add svg, .add-scrim, .add-menu { transition: none; }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.numeric-column,
+.record-column {
+  white-space: nowrap;
+}
+
+.provisional-badge {
+  margin-left: 6px;
+  vertical-align: 1px;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  background: var(--fill);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+tr:last-child td { border-bottom: none; }
+
+td.rank {
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 28px;
+}
+
+tr.rank-1 td.rank { color: var(--highlight-text); }
+
+.streak-badge {
+  margin-left: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.streak-badge.win { color: var(--highlight-text); }
+.streak-badge.loss { color: var(--text-muted); }
+
+.form-dots {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.form-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.form-dot.win { background: var(--success-fill); }
+.form-dot.loss { background: var(--danger-fill); }
+
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 16px 0 6px;
+}
+
+/* `password` is used by the Settings passcode field and the Admin Mode
+   unlock modal; without it they fell back to an unstyled browser input,
+   and the 16px below is what stops iOS Safari zooming the page on focus.
+   `date` is listed for any future date field — no page uses one today. */
+select, input[type="text"], input[type="number"], input[type="date"], input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+}
+
+select:focus, input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.toggle-group {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0 16px;
+  background: var(--fill);
+  padding: 2px;
+  border-radius: 9px;
+}
+
+.toggle-group button {
+  flex: 1;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 8px;
+}
+
+.toggle-group button.active {
+  background: var(--segment-active);
+  color: var(--text);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+button.primary, .btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  margin-top: 20px;
+}
+
+button, .btn { cursor: pointer; }
+
+button.primary:active, .btn:active {
+  opacity: 0.85;
+}
+
+button.primary:disabled, .btn:disabled {
+  opacity: 0.6;
+}
+
+button.small {
+  padding: 7px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: none;
+  border-radius: 8px;
+}
+
+.score-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.score-row > div { flex: 1; }
+
+.preset-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.preset-btn {
+  flex: 1;
+  padding: 9px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: 8px;
+}
+
+.preset-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.field-help {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 4px 0 10px;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.button-row .btn {
+  margin-top: 0;
+  flex: 1;
+}
+
+a.btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+#continue-row {
+  margin-top: 14px;
+}
+
+.status {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.status.success { background: var(--success-bg); color: var(--success); }
+.status.error { background: var(--danger-bg); color: var(--danger); }
+
+.loading, .empty-state {
+  color: var(--text-muted);
+  padding: 24px 0;
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+/* Loading skeletons
+   Each page's #loading div holds a silhouette of the content that's about to
+   land, so the first paint has the right shape and nothing jumps when real
+   data replaces it. The page scripts already hide #loading on success and
+   overwrite its textContent on error, so both paths clear the skeleton with
+   no extra JS. `.skeleton-host` just strips the centred-text look .loading
+   otherwise applies; an error swaps className outright and gets it back. */
+.skeleton-host {
+  padding: 0;
+  text-align: left;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skeleton-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sk {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--fill);
+}
+
+/* The sweep is a pseudo-element so it can't be mistaken for content by a
+   screen reader, and so the block keeps its own background underneath. */
+.sk::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--sk-sweep), transparent);
+  animation: sk-sweep 1.35s ease-in-out infinite;
+}
+
+@keyframes sk-sweep {
+  100% { transform: translateX(100%); }
+}
+
+/* Motion is decoration here — the layout already communicates "loading". */
+@media (prefers-reduced-motion: reduce) {
+  .sk::after { animation: none; }
+}
+
+.sk-line { height: 11px; }
+.sk-line.tall { height: 15px; }
+.sk-line.w-40 { width: 40%; }
+.sk-line.w-55 { width: 55%; }
+.sk-line.w-70 { width: 70%; }
+.sk-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.sk-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Leaderboard row/card silhouette: rank, name stack, win %. */
+.sk-row {
+  display: grid;
+  grid-template-columns: 20px 1fr 46px;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 12px;
+}
+
+.sk-row .sk-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* History / player game-log card silhouette: meta line, then two side rows. */
+.sk-game {
+  padding: 12px 14px;
+}
+
+.sk-game .sk-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.sk-game .sk-side {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+}
+
+.sk-game .sk-side .sk-line:first-child { flex: 1; }
+.sk-game .sk-side .sk-line:last-child { width: 26px; flex: 0 0 auto; }
+
+/* Player profile: the four stat tiles, then the chart card. */
+.sk-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.sk-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 16px 6px;
+}
+
+.sk-tile .sk-line:first-child { width: 60%; height: 15px; }
+.sk-tile .sk-line:last-child { width: 80%; height: 8px; }
+
+.player-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--gray);
+  text-underline-offset: 3px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 12px 0 20px;
+}
+
+.stat-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 6px;
+  text-align: center;
+}
+
+.stat-tile .value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-tile .label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+#player-filter {
+  margin-bottom: 16px;
+}
+
+.game-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+
+.game-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.game-meta .meta-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 2px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 4px 6px;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.edit-actions .btn {
+  margin-top: 0;
+  flex: 1;
+}
+
+.btn.secondary {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.game-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+.game-row .side-names {
+  flex: 1;
+  font-size: 0.95rem;
+}
+
+.game-row .side-score {
+  font-weight: 700;
+  width: 24px;
+  text-align: right;
+}
+
+.game-row.winner .side-names,
+.game-row.winner .side-score {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.game-row.loser .side-names,
+.game-row.loser .side-score {
+  color: var(--text-muted);
+}
+
+.trophy {
+  margin-right: 4px;
+}
+
+/* The player whose page you're on — bold, unlinked, since the link would
+   point at the page you're already reading. */
+.game-row .side-names .self {
+  font-weight: 700;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  width: 100%;
+  max-width: 340px;
+  box-shadow: var(--shadow-md);
+}
+
+.modal-card h2 {
+  margin: 4px 0 6px;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1.18rem;
+  font-weight: 700;
+  padding: 0;
+}
+
+.modal-kicker,
+.post-game-kicker {
+  color: var(--success);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.modal-actions .btn {
+  margin-top: 0;
+  flex: 1;
+}
+
+
+/* Provisional (not yet ranked) players */
+.provisional-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+.provisional-row { opacity: 0.82; }
+/* Player profile summary */
+.profile-breakdown {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: -8px 0 22px;
+}
+
+.breakdown-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.breakdown-card strong { font-size: 1rem; }
+.breakdown-label { color: var(--text-muted); font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.035em; }
+
+/* Fast post-game loop */
+.post-game-panel {
+  margin-top: 14px;
+  padding: 15px;
+  border: 1px solid var(--success-border);
+  border-radius: 16px;
+  background: var(--success-bg);
+}
+
+.post-game-summary {
+  margin-top: 4px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.post-game-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.quick-action {
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 7px 3px;
+  border: 1px solid var(--success-border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+.quick-action span { font-size: 1.08rem; }
+.quick-action.danger-action { color: var(--danger); }
+
+#log-game-form .score-row input {
+  min-height: 58px;
+  text-align: center;
+  font-size: 1.35rem;
+  font-weight: 750;
+}
+
+/* Leaderboard: mobile player cards
+   The wide table and this card list are two views of the same rows. Below the
+   900px breakpoint the table is hidden entirely and the cards take over, so
+   nothing gets truncated away on a phone — the columns the table drops are
+   folded into each card's expandable panel instead. */
+#leaderboard-table { display: none; }
+
+.player-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.player-card.rank-1 { border-color: color-mix(in srgb, var(--highlight) 45%, transparent); }
+
+.pc-head {
+  display: grid;
+  grid-template-columns: 26px 1fr auto 16px;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Suppress the native disclosure triangle; .pc-chevron replaces it. */
+.pc-head::-webkit-details-marker { display: none; }
+.pc-head::marker { content: ''; }
+
+.pc-rank {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.player-card.rank-1 .pc-rank { color: var(--highlight-text); }
+
+.pc-identity { min-width: 0; }
+
+.pc-name {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.pc-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.pc-record { font-weight: 700; color: var(--text); }
+.pc-sep { color: var(--border); }
+.pc-form { margin-top: 0; margin-left: 2px; }
+
+.pc-winpct {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.05;
+}
+
+.pc-winpct-value {
+  font-size: 1.32rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
+
+.pc-winpct-label {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.pc-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  transition: transform 0.15s ease;
+}
+
+.player-card[open] .pc-chevron { transform: rotate(180deg); }
+
+.pc-body {
+  padding: 2px 12px 12px;
+  border-top: 1px solid var(--border);
+  margin-top: -1px;
+}
+
+.pc-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pc-stat {
+  background: var(--bg);
+  border-radius: 9px;
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.pc-stat-label {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.pc-stat-value {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.pc-profile {
+  display: block;
+  margin-top: 12px;
+  padding: 9px;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-chevron { transition: none; }
+}
+
+@media (min-width: 900px) {
+  body { padding-left: 220px; }
+
+  nav.tab-bar {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: 220px;
+    padding: 22px 14px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 5px;
+    border-top: none;
+    border-right: 0.5px solid var(--separator);
+  }
+
+  nav.tab-bar::before {
+    content: 'Pickleball League';
+    order: -2;
+    display: block;
+    padding: 4px 14px 18px;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 850;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  nav.tab-bar a {
+    flex: 0 0 auto;
+    max-width: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  nav.tab-bar a svg { width: 22px; height: 22px; }
+  nav.tab-bar a.active { background: var(--accent-soft); }
+
+  /* The add button becomes a full-width pill; its menu opens beside it. */
+  .tab-add {
+    order: -1;
+    width: auto;
+    height: 44px;
+    margin: 0 0 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: none;
+  }
+  .tab-add svg { width: 20px; height: 20px; }
+  .tab-add-label { display: inline; }
+  body.add-open .tab-add svg { transform: none; }
+
+  .add-menu {
+    left: 236px;
+    top: var(--add-menu-top, 66px);
+    bottom: auto;
+    transform: translate(0, -6px) scale(0.97);
+  }
+  body.add-open .add-menu { transform: none; }
+
+  .league-banner,
+  header.top-bar,
+  main {
+    max-width: 760px;
+  }
+
+  .league-banner { padding-top: 26px; }
+  main { padding-bottom: 48px; }
+
+  .admin-lock-label { display: inline; }
+
+  body.leaderboard-page .league-banner,
+  body.leaderboard-page header.top-bar,
+  body.leaderboard-page main {
+    max-width: 1180px;
+  }
+
+  body.leaderboard-page main {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  #leaderboard-table { display: table; }
+  #leaderboard-cards { display: none; }
+
+  body.leaderboard-page #leaderboard-table th,
+  body.leaderboard-page #leaderboard-table td {
+    padding: 13px 12px;
+    vertical-align: middle;
+  }
+
+  body.leaderboard-page #leaderboard-table .player-column {
+    min-width: 170px;
+  }
+
+  .desktop-form {
+    margin-top: 0;
+    min-width: 47px;
+  }
+
+  .desktop-form .form-dot {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Log Game: tap-to-select player picker
+   Replaced four native <select>s. On a phone each of those opened an OS picker
+   wheel, so a doubles lineup cost four separate modal interactions; here it's
+   four taps against a roster already sorted most-recently-played-first. */
+.team-slots {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 10px;
+  margin: 16px 0 6px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.team-slot { min-width: 0; }
+
+.team-slot-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.team-slot-vs {
+  align-self: center;
+  padding-top: 14px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.slot-names {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.slot-name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  min-height: 34px;
+  padding: 6px 9px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.slot-name.filled {
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.slot-name.empty {
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.slot-remove { color: var(--text-muted); font-weight: 700; }
+
+.picker-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 14px 0 8px;
+}
+
+.picker-hint {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.picker-clear {
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.picker-clear:disabled { opacity: 0.45; }
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.player-chip {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  align-items: center;
+  gap: 7px;
+  /* 44px keeps every chip at the iOS minimum tap target. */
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.player-chip.picked {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.player-chip.is-disabled { opacity: 0.4; }
+
+.chip-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.64rem;
+  font-weight: 800;
+}
+
+.player-chip.picked .chip-slot {
+  background: var(--accent);
+  color: #fff;
+}
+
+.chip-name {
+  font-size: 0.84rem;
+  font-weight: 650;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.player-chip.picked .chip-name { color: var(--accent); }
+
+@media (min-width: 640px) {
+  .player-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Match Up: two players side by side. */
+.matchup-pickers {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 18px;
+}
+
+.matchup-swap {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.tape {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 12px 0 20px;
+  overflow: hidden;
+}
+
+.tape-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 84px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+
+.tape-row:last-child { border-bottom: none; }
+.tape-head { font-weight: 700; background: var(--bg); }
+.tape-a { text-align: left; }
+.tape-b { text-align: right; }
+
+.tape-label {
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tape-val { font-weight: 600; }
+.tape-val .form-dots { display: inline-flex; margin-top: 0; }
+
+.tape-val.edge > span,
+.common-table td.edge {
+  font-weight: 800;
+}
+
+.tape-val.edge > span {
+  display: inline-block;
+  padding: 1px 8px;
+  margin: -1px -8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+
+.h2h-score {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.h2h-num {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.h2h-num.edge { color: var(--accent); }
+.h2h-dash { color: var(--text-muted); font-size: 1.4rem; }
+
+.h2h-leader {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin: 2px 0 14px;
+}
+
+.matchup-breakdown { margin: 0 0 14px; }
+
+.common-table td { font-variant-numeric: tabular-nums; }
+.muted { color: var(--text-muted); font-weight: 500; font-size: 0.82em; }
+
+.profile-matchup-link { margin: -6px 0 22px; }
+
+/* Live Game: side-out scoreboard, ported from prototypes/app-v2's scoreboard.
+   One row per team (names left, score right), a stripe on the serving team,
+   and server 1/2 as stacked dots beside its score. */
+.live-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 0 12px;
+}
+
+.live-call {
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.live-call-target { color: var(--text-muted); font-weight: 500; font-size: 0.86rem; }
+
+.live-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--fill);
+  color: var(--text-muted);
+  font-family: var(--font-rounded);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Red dot pulses while the clock is running, like a broadcast "live" tag. */
+.live-timer::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  opacity: 0.5;
+}
+.live-timer.running { color: var(--text); }
+.live-timer.running::before { background: var(--danger-fill); opacity: 1; animation: live-blink 1.6s ease-in-out infinite; }
+@keyframes live-blink { 50% { opacity: 0.3; } }
+
+.live-hint { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; }
+
+.live-board {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.live-team {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 92px;
+  padding: 14px 16px 14px 20px;
+}
+.live-team + .live-team { border-top: 1px solid var(--border); }
+.live-team::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: transparent;
+  transition: background 0.2s;
+}
+.live-team.serving::before { background: var(--success-fill); }
+.live-team.won::before { background: var(--yellow); }
+
+/* Before the first rally, either team can be tapped to serve first. */
+.live-board.picking .live-team { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.live-board.picking .live-team:active { background: var(--fill); }
+
+/* Broadcast-style "J. CAVE": muted initial, strong surname. */
+.live-players { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.live-player {
+  font-size: 1.02rem;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.live-player .first { color: var(--text-muted); font-weight: 500; }
+.live-player .last { color: var(--text); font-weight: 700; }
+
+.live-swap {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--accent);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.live-score {
+  min-width: 64px;
+  text-align: right;
+  font-family: var(--font-rounded);
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Server number as stacked dots beside the serving team's score: one = server 1, two = server 2. */
+.server-badge {
+  flex: none;
+  width: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: scale(0);
+  transition: transform 0.2s;
+}
+.server-badge .pip { width: 9px; height: 9px; border-radius: 50%; background: var(--success-fill); }
+.server-badge[data-server="1"] .pip + .pip { display: none; }
+.live-team.serving .server-badge { transform: scale(1); }
+.server-badge.pop { animation: live-pop 0.35s ease-out; }
+@keyframes live-pop { 50% { transform: scale(1.3); } }
+
+.rally-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.rally-btn {
+  padding: 22px 8px;
+  border: none;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  /* Rapid taps shouldn't trigger iOS double-tap zoom. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.rally-btn.point { background: var(--success-fill); color: #fff; }
+.rally-btn.fault { background: var(--fill); color: var(--text); }
+.rally-btn:active { opacity: 0.85; }
+.rally-btn:disabled { opacity: 0.4; }
+
+.live-secondary { display: flex; justify-content: space-between; margin-top: 12px; }
+.live-secondary .picker-clear { padding: 7px 13px; font-size: 0.8rem; }
+
+.live-result {
+  margin-top: 14px;
+  padding: 15px;
+  border: 1px solid var(--success-border);
+  border-radius: 16px;
+  background: var(--success-bg);
+}
+.live-result .btn { margin-top: 13px; }
+a.quick-action { text-decoration: none; }
+
+.live-group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.live-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+}
+.live-row + .live-row { border-top: 1px solid var(--border); }
+.live-row.empty { color: var(--text-muted); }
+.live-detail { color: var(--text-muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Activity timeline: time, colored dot by event type, description, score call. */
+.live-event { justify-content: flex-start; }
+.live-event .time { width: 44px; flex: none; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.live-event .text { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; }
+/* One line per rally: long names truncate instead of wrapping. */
+.live-event .label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.live-event .text::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; }
+.live-event.point .text::before { background: var(--success-fill); }
+.live-event.fault .text::before { background: var(--gray); }
+.live-event.sideout .text::before { background: var(--orange); }
+.live-event.win .text { font-weight: 700; }
+.live-event.win .text::before { background: var(--yellow); }
+
+/* Log Game: start or resume a live game. */
+.live-start-btn { margin-top: 14px; }
+
+.live-resume {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 4px 0 14px;
+  padding: 13px 15px;
+  border: 1px solid var(--success-border);
+  border-radius: var(--radius);
+  background: var(--success-bg);
+  color: var(--success);
+  font-weight: 700;
+  text-decoration: none;
+}
+.live-resume small { display: block; color: var(--text); font-weight: 500; font-size: 0.82rem; margin-top: 2px; }
+.live-resume-arrow { font-size: 1.2rem; }
+
+/* Ratings Preview (plus/minus) */
+.pm-intro { display: flex; gap: 8px; align-items: baseline; margin-top: 12px; }
+.pm-intro .badge { font-size: 0.62rem; flex-shrink: 0; }
+.pm-footnote { margin-top: 8px; font-size: 0.78rem; }
+.pm-table td { font-variant-numeric: tabular-nums; }
+.pm-table .provisional-badge { margin-left: 6px; }
+.pm-num { font-weight: 700; }
+
+.pm-teams {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.pm-team { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+
+.pm-spread {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 16px 14px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.pm-spread-main { font-size: 1.2rem; font-weight: 700; }
+.pm-spread-sub { margin-top: 4px; font-size: 0.86rem; font-weight: 600; color: var(--text-muted); }
+.pm-spread-note { margin-top: 8px; font-size: 0.78rem; color: var(--highlight-text); }
+
+.pm-tag { background: color-mix(in srgb, var(--highlight) 16%, transparent); color: var(--highlight-text); }
+
+.pm-callout {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: baseline;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.pm-callout-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pm-changes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.pm-change {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Leaderboard: plus/minus notes */
+.pm-board-help { margin: 4px 0 12px; }
+#leaderboard-table td { font-variant-numeric: tabular-nums; }

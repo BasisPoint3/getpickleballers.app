@@ -1,0 +1,166 @@
+/* The app's tokens (pickleball-app/docs/DESIGN.md), on a web page. Light by
+   default on Chalk, dark on Night with the system. Headings in the rounded
+   system face, like the app's numbers. */
+:root {
+  --ink: #1b1f3b;
+  --chalk: #fff9f0;
+  --night: #121528;
+  --paper: #eceef8;
+  --ball: #d9f24f;
+  --court-blue: #2b63d9;
+  --coral: #e8552f;
+  --kitchen-green: #14865f;
+
+  --bg: var(--chalk);
+  --fg: var(--ink);
+  --muted: rgba(27, 31, 59, 0.62);
+  --rule: rgba(27, 31, 59, 0.12);
+  --card: rgba(27, 31, 59, 0.05);
+  --link: var(--court-blue);
+  --accent: var(--ball);
+  --accent-fg: var(--ink);
+
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  --font-display: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --measure: 68ch;
+  --gutter: clamp(16px, 4vw, 32px);
+  --radius: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--night);
+    --fg: var(--paper);
+    --muted: rgba(236, 238, 248, 0.62);
+    --rule: rgba(236, 238, 248, 0.14);
+    --card: rgba(236, 238, 248, 0.06);
+    --link: #86a8f7;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+}
+h1 { font-size: clamp(32px, 6vw, 48px); font-weight: 800; }
+h2 { font-size: clamp(24px, 4vw, 30px); font-weight: 700; margin-top: 1.8em; }
+h3 { font-size: 20px; font-weight: 700; margin-top: 1.4em; }
+p, ul, ol, table, blockquote, pre { margin: 0 0 1.1em; }
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+strong { font-weight: 700; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+hr { border: 0; border-top: 1px solid var(--rule); margin: 2em 0; }
+
+table { border-collapse: collapse; width: 100%; font-size: 16px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-display); font-weight: 700; }
+/* Markdown tables scroll sideways on a phone instead of breaking the page */
+.prose table { display: block; overflow-x: auto; width: max-content; max-width: 100%; }
+
+blockquote {
+  margin-left: 0;
+  padding: 4px 0 4px 16px;
+  border-left: 4px solid var(--accent);
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: 1.1em;
+}
+
+.wrap { width: 100%; max-width: 980px; margin: 0 auto; padding: 0 var(--gutter); }
+.prose { max-width: var(--measure); }
+
+/* Header and footer */
+.site-header { padding: 18px 0; }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+  color: var(--fg);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.wordmark .ball { width: 22px; height: 22px; border-radius: 50%; background: var(--ball); box-shadow: inset -3px -3px 0 rgba(27, 31, 59, 0.15); }
+.nav { display: flex; gap: 18px; align-items: center; font-weight: 600; }
+.nav a { color: var(--fg); text-decoration: none; }
+.nav a:hover { text-decoration: underline; }
+main { flex: 1; padding: 16px 0 56px; }
+.site-footer { border-top: 1px solid var(--rule); padding: 24px 0 40px; color: var(--muted); font-size: 15px; }
+.site-footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; }
+.site-footer a { color: var(--muted); }
+
+/* Buttons: pills, like the app */
+.btn {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1;
+  padding: 14px 22px;
+  border-radius: 9999px;
+  text-decoration: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+.btn.primary { background: var(--accent); color: var(--accent-fg); }
+.btn.primary:hover { filter: brightness(1.04); }
+.btn.quiet { background: transparent; color: var(--fg); border-color: var(--rule); }
+.btn.quiet:hover { border-color: var(--fg); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 20px 0; }
+
+/* Cards and lists */
+.card { background: var(--card); border-radius: var(--radius); padding: 20px 22px; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: 0 0 1.5em; }
+.grid .card h3 { margin-top: 0; }
+.grid .card p { margin: 0; color: var(--muted); }
+.list { list-style: none; padding: 0; margin: 0; }
+.list li { padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.list li:last-child { border-bottom: 0; }
+.list a { font-family: var(--font-display); font-weight: 700; font-size: 19px; color: var(--fg); text-decoration: none; }
+.list a:hover { text-decoration: underline; }
+.list p { margin: 4px 0 0; color: var(--muted); }
+.meta { color: var(--muted); font-size: 15px; }
+.eyebrow { font-family: var(--font-display); font-weight: 700; color: var(--muted); font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 8px; }
+.crumbs { font-size: 15px; color: var(--muted); margin: 0 0 16px; }
+.crumbs a { color: var(--muted); }
+
+/* The one CTA in a guide */
+.cta {
+  margin: 2.5em 0 0;
+  padding: 24px;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--paper);
+}
+.cta h2 { margin-top: 0; font-size: 24px; }
+.cta p { color: rgba(236, 238, 248, 0.8); }
+.cta .btn.primary { margin-top: 4px; }
+@media (prefers-color-scheme: dark) {
+  .cta { background: var(--card); border: 1px solid var(--rule); color: var(--fg); }
+  .cta p { color: var(--muted); }
+}
+
+.lede { font-size: 20px; color: var(--muted); max-width: var(--measure); }
+.hero { padding: 24px 0 8px; }
+.hero h1 { max-width: 16ch; }

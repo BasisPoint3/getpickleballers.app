@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const guides = (await getCollection('guides')).sort(
+  (a, b) => (b.data.updatedDate ?? b.data.publishDate).valueOf() - (a.data.updatedDate ?? a.data.publishDate).valueOf(),
+);
+---
+
+<Base title="Guides" description="Plain-words guides to keeping score, ranking players and running a pickleball group.">
+  <section class="prose">
+    <h1>Guides</h1>
+    <p class="lede">Keeping score, ranking the players, and running a night or a league. Short, and true to the rulebook.</p>
+    <ul class="list">
+      {guides.map((g) => (
+        <li>
+          <a href={`/guides/${g.id}/`}>{g.data.title}</a>
+          <p>{g.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

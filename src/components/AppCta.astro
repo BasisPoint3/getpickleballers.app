@@ -1,0 +1,18 @@
+---
+// The one call to action in a guide, after the bottom line. Points at the
+// App Store once there is a page; the waitlist until then.
+import { APP_STORE_URL } from '../consts';
+
+interface Props {
+  line?: string;
+}
+const { line = 'Pickleballers keeps the score for you: two buttons on the court, the call in big type, and one number for every player in your group.' } = Astro.props;
+const href = APP_STORE_URL || '/waitlist/';
+const label = APP_STORE_URL ? 'Get it on the App Store' : 'Join the waitlist';
+---
+
+<aside class="cta">
+  <h2>Keep score without thinking about it</h2>
+  <p>{line}</p>
+  <a class="btn primary" href={href}>{label}</a>
+</aside>

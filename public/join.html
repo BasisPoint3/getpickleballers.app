@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Join your group — Pickleballers</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+</head>
+<body>
+  <!--
+    Invite links for the iPhone app (D-58). The app shares
+    join.html#<token>; this page hands the token to the app through
+    pickleballers://join/<token>. The token stays after the #, so it never
+    reaches this server. Not part of the PWA, and not linked from it.
+  -->
+  <header class="top-bar"><h1>Join your group</h1></header>
+  <main>
+    <div id="ready">
+      <p>You've been invited to a pickleball group on <strong>Pickleballers</strong>, an iPhone app for logging games, following the score and seeing where you stand.</p>
+      <div class="button-row">
+        <a class="btn" id="open-app" href="#">Open in Pickleballers</a>
+      </div>
+      <h2>Don't have the app yet?</h2>
+      <p class="field-help">
+        Install it from the TestFlight invite the person who sent this link gave you.
+        Then come back and tap <strong>Open in Pickleballers</strong>, or copy the link
+        and paste it on the app's first screen under <strong>I have an invite link</strong>.
+      </p>
+      <div class="button-row">
+        <button type="button" class="btn secondary" id="copy-link">Copy invite link</button>
+      </div>
+      <div id="copied" class="status" style="display: none">Copied. Paste it in the app.</div>
+    </div>
+    <div id="broken" class="status" style="display: none">
+      This invite link isn't complete. Ask the person who sent it to send it again.
+    </div>
+  </main>
+  <script src="js/join.js"></script>
+</body>
+</html>

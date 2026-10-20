@@ -1,0 +1,39 @@
+---
+// A guide: the title, when it was updated, the body, the one CTA, and up
+// to three related guides.
+import type { CollectionEntry } from 'astro:content';
+import Base from './Base.astro';
+import AppCta from '../components/AppCta.astro';
+
+interface Props {
+  guide: CollectionEntry<'guides'>;
+  related: CollectionEntry<'guides'>[];
+}
+const { guide, related } = Astro.props;
+const { title, description, publishDate, updatedDate } = guide.data;
+const shown = updatedDate ?? publishDate;
+const dateText = shown.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+---
+
+<Base title={title} description={description}>
+  <article class="prose">
+    <p class="crumbs"><a href="/">Home</a> / <a href="/guides/">Guides</a></p>
+    <h1>{title}</h1>
+    <p class="meta">{updatedDate ? 'Updated' : 'Published'} <time datetime={shown.toISOString().slice(0, 10)}>{dateText}</time></p>
+    <slot />
+    <AppCta />
+    {related.length > 0 && (
+      <section>
+        <h2>More guides</h2>
+        <ul class="list">
+          {related.map((g) => (
+            <li>
+              <a href={`/guides/${g.id}/`}>{g.data.title}</a>
+              <p>{g.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+</Base>

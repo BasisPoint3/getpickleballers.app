@@ -1,0 +1,61 @@
+---
+// Every page's frame: head, header, footer. Pages pass a title and a
+// description; the canonical URL comes from the site setting.
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description = SITE_DESCRIPTION } = Astro.props;
+const fullTitle = title ? `${title} · ${SITE_TITLE}` : `${SITE_TITLE}: the scorekeeper for your pickleball group`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/icons/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121528" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_TITLE} />
+    <meta property="og:title" content={title ?? SITE_TITLE} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="wordmark" href="/"><span class="ball" aria-hidden="true"></span>{SITE_TITLE}</a>
+        <nav class="nav" aria-label="Site">
+          <a href="/guides/">Guides</a>
+          <a href="/waitlist/">Get the app</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="wrap">
+        <slot />
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>© {year} {SITE_TITLE}</span>
+        <a href="/guides/">Guides</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/support/">Support</a>
+      </div>
+    </footer>
+  </body>
+</html>

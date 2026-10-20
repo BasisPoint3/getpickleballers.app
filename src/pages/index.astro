@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { APP_STORE_URL } from '../consts';
+
+const guides = (await getCollection('guides'))
+  .sort((a, b) => (b.data.updatedDate ?? b.data.publishDate).valueOf() - (a.data.updatedDate ?? a.data.publishDate).valueOf())
+  .slice(0, 5);
+const ctaHref = APP_STORE_URL || '/waitlist/';
+const ctaLabel = APP_STORE_URL ? 'Get it on the App Store' : 'Join the waitlist';
+---
+
+<Base>
+  <section class="hero">
+    <p class="eyebrow">iPhone and Apple Watch</p>
+    <h1>The scorekeeper for your pickleball group.</h1>
+    <p class="lede">Log a game in seconds, follow the live score from anywhere, and see one number for every player that says how many points they're worth.</p>
+    <div class="btn-row">
+      <a class="btn primary" href={ctaHref}>{ctaLabel}</a>
+      <a class="btn quiet" href="/guides/">Read the guides</a>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h3>Score from the court</h3>
+      <p>Two buttons, Point and Fault. The app calls the score, knows who serves next, and never loses the second server.</p>
+    </div>
+    <div class="card">
+      <h3>Watch from anywhere</h3>
+      <p>Every tap reaches the other phones in under a second. One link puts the score and the leaderboard on the TV at the courts.</p>
+    </div>
+    <div class="card">
+      <h3>One number per player</h3>
+      <p>Plus/minus: how many points you're worth against your group. A spread before every game, and a story for both teams after it.</p>
+    </div>
+  </section>
+
+  <section class="prose">
+    <p>Free answers <em>"what's the score?"</em> Pro answers <em>"who should I play next?"</em> and <em>"how do I get better?"</em></p>
+    <p class="meta">In testing with one league now. Coming to the App Store.</p>
+  </section>
+
+  {guides.length > 0 && (
+    <section class="prose">
+      <h2>Guides</h2>
+      <ul class="list">
+        {guides.map((g) => (
+          <li>
+            <a href={`/guides/${g.id}/`}>{g.data.title}</a>
+            <p>{g.data.description}</p>
+          </li>
+        ))}
+      </ul>
+      <p><a href="/guides/">All guides</a></p>
+    </section>
+  )}
+</Base>

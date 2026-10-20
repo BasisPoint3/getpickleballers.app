@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import { WAITLIST_FORM_URL, APP_STORE_URL } from '../consts';
+---
+
+<Base title="Get the app" description="Pickleballers is in testing. Leave your email and hear when it's on the App Store.">
+  <article class="prose">
+    <h1>Get the app</h1>
+    {APP_STORE_URL ? (
+      <p><a class="btn primary" href={APP_STORE_URL}>Get it on the App Store</a></p>
+    ) : (
+      <>
+        <p class="lede">Pickleballers is in testing with one league, on iPhone and Apple Watch. It comes to the App Store when the league stops using a spreadsheet.</p>
+        {WAITLIST_FORM_URL ? (
+          <iframe src={WAITLIST_FORM_URL} title="Join the waitlist" width="100%" height="320" frameborder="0" style="border:0;margin:8px 0 24px"></iframe>
+        ) : (
+          <p>The waitlist opens soon. Until then, the <a href="/guides/">guides</a> are the best way to see what the app does.</p>
+        )}
+      </>
+    )}
+  </article>
+</Base>

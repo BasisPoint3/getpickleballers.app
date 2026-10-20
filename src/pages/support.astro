@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import { SUPPORT_EMAIL, GITHUB_ISSUES_URL } from '../consts';
+---
+
+<Base title="Support" description="How to reach the people behind the Pickleballers app.">
+  <article class="prose">
+    <h1>Support</h1>
+    <p>Pickleballers is built by one person and tested by one league, so you'll hear back from the person who wrote it.</p>
+    {SUPPORT_EMAIL ? (
+      <p>Email <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.</p>
+    ) : (
+      <p>Open an issue on <a href={GITHUB_ISSUES_URL}>the site's GitHub page</a>, or watch this page for an email address once the app is on the App Store.</p>
+    )}
+    <h2>Common questions</h2>
+    <p>The <a href="/guides/">guides</a> cover how the score is called, how the rankings work and how to run a night. The <a href="/privacy/">privacy page</a> says what the app stores.</p>
+  </article>
+</Base>
