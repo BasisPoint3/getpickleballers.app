@@ -12,10 +12,11 @@
 // heartbeat, broadcast), so the page has no dependencies and nothing to
 // build, like the rest of the site.
 (function () {
-  // Filled in when the production Supabase project exists. Until then, and
-  // for the local stack, open the page once with ?api=<url>&key=<publishable key>
-  // and it remembers them.
-  const PRODUCTION = { api: '', key: '' };
+  // The hosted Supabase project (pickleball-app/docs/PRODUCTION.md, D-125):
+  // its custom domain and publishable key, which is public by design; the
+  // database's access rules do the protecting. For the local stack, open the
+  // page once with ?api=<url>&key=<publishable key> and it remembers them.
+  const PRODUCTION = { api: 'https://api.getpickleballers.app', key: 'sb_publishable_MLUSE-jqOspvij85rRfZLg_WFiSYP-3' };
   // The App Store link, once there is one. Until then the QR code carries
   // this page's own link, so people can follow on their phones.
   const APP_STORE_URL = '';
