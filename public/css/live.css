@@ -1,32 +1,61 @@
-/* The live link page: the app's scoreboard with the lights down, sized for a
-   screen across the room. Ink background, Ball for the server, Court Blue and
-   Coral for the teams (docs/DESIGN.md). Not used by the prototype's pages.
+/* The live link page in the kit, v2 (pickleball-app/docs/DESIGN_SYSTEM.md,
+   D-173; the TV artboards of the Pickleballers Kit canvas): the grouped
+   ground, white boards with 40 px corners and a soft shadow, SF Pro Rounded
+   heavy for every number and headline (Nunito where there is no SF), a
+   stripe in the team's fill beside each team, the ball in a fixed slot
+   before the server, the leading score in ink and the trailing one in the
+   secondary gray, the leaderboard as a board of its own, the ball and the
+   wordmark in the footer with the QR code. Dark follows the phone's dark
+   values (black, #1C1C1E boards).
 
-   Sizing: the header, footer and leaderboard scale with the screen's height
-   (vh, with a floor for phones and no ceiling, so a 4K screen at 1x looks
-   like a 1080p one, only sharper). Each board is a size container, and
+   Sizing (D-161): the header, footer and leaderboard scale with the screen's
+   height (vh, with a floor for phones and no ceiling, so a 4K screen at 1x
+   looks like a 1080p one, only sharper). Each board is a size container, and
    everything on it is sized in cqh/cqw of the board itself, so the score
-   call is as big as the board allows whatever the header, the footer and
-   the QR code take, and two or four boards shrink to fit on their own. */
+   call is as big as the board allows whatever the header, the footer and the
+   QR code take, and two, four or eight boards shrink to fit on their own. */
 :root {
+  --ground: #F2F2F7;
+  --card: #FFFFFF;
+  --fill: #EEEEF0;
+  --hairline: rgba(27, 31, 59, 0.04);
   --ink: #1B1F3B;
-  --ink-2: #262B4F;
-  --paper: #ECEEF8;
-  --muted: rgba(236, 238, 248, 0.62);
+  --label: #000000;
+  --text2: #6C6C70;
+  --dash: #B3B6C6;
   --ball: #D9F24F;
-  --team-a: #4A7DF0;
-  --team-b: #F06A45;
-  --font: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  /* The page's side margin: 3vw, at most 48px on a 1080p screen, more on a taller one. */
-  --side: clamp(16px, 3vw, max(48px, 4.45vh));
+  --team-a: #2B63D9;
+  --team-b: #E8552F;
+  --up: #127A56;
+  --live: #FF3B30;
+  --shadow: 0 6px 24px rgba(27, 31, 59, 0.08), 0 0 0 1px var(--hairline);
+  --font: -apple-system, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+  --num: ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif;
+  /* The page's side margin: 3vw, at most 56px on a 1080p screen, more on a taller one. */
+  --side: clamp(16px, 3vw, max(56px, 5.2vh));
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #000000;
+    --card: #1C1C1E;
+    --fill: #2A2A2D;
+    --hairline: rgba(255, 255, 255, 0.06);
+    --ink: #ECEEF8;
+    --label: #FFFFFF;
+    --text2: #98989F;
+    --dash: #4C5064;
+    --up: #2DB582;
+    --live: #FF453A;
+    --shadow: none;
+  }
 }
 
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
   margin: 0;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--ground);
+  color: var(--label);
   font-family: var(--font);
   display: flex;
   flex-direction: column;
@@ -35,6 +64,12 @@ body {
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
+/* The rounded face for every number and headline. */
+.num, .group-name, .call, .points, .clock, .rank, .number, .wordmark, .standings-title, .message p:first-child {
+  font-family: var(--num);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
 
 .top, .foot {
   flex: none;
@@ -42,7 +77,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: max(10px, 2vh) var(--side);
+  padding: max(10px, 2.2vh) var(--side);
 }
 /* A long group name wraps to a second line rather than being cut; the boards
    below make room. (Names are at most 60 characters.) */
@@ -50,44 +85,38 @@ body {
   flex: 0 1 auto;
   min-width: 0;
   margin: 0;
-  font-size: max(18px, 3.2vh);
-  font-weight: 700;
-  line-height: 1.15;
+  font-size: max(22px, 4.1vh);
+  line-height: 1.2;
+  color: var(--ink);
   overflow-wrap: anywhere;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
+/* The Live marker: the red dot beside the word, which carries the meaning. */
 .status {
   flex: none;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: max(14px, 2.4vh);
-  font-weight: 700;
-  color: var(--muted);
+  gap: 0.45em;
+  font-size: max(15px, 2.6vh);
+  font-weight: 600;
+  color: var(--text2);
   white-space: nowrap;
 }
-.status.live { color: var(--team-b); }
-.status .clock { color: var(--paper); font-variant-numeric: tabular-nums; margin-left: 0.4em; }
-.board-top .clock { font-variant-numeric: tabular-nums; }
+.status.live { color: var(--ink); }
 .status.live::before {
   content: "";
   width: 0.6em;
   height: 0.6em;
   border-radius: 50%;
-  background: var(--team-b);
+  background: var(--live);
   animation: breathe 1.2s ease-in-out infinite alternate;
 }
+.status .count { color: var(--text2); }
+.status .clock { color: var(--ink); font-size: 1.05em; font-variant-numeric: tabular-nums; margin-left: 0.2em; }
 @keyframes breathe { to { opacity: 0.35; } }
-
-.foot {
-  font-size: max(12px, 2vh);
-  color: var(--muted);
-}
-.wordmark { font-weight: 800; letter-spacing: 0.02em; }
-.get-app { font-weight: 600; }
 
 .main {
   flex: 1;
@@ -100,133 +129,161 @@ body {
 
 /* Boards: one fills the space between the header and the footer; two sit
    side by side on a landscape screen wider than a phone (stacked on a
-   portrait one, where each is twice the size that way), four as two rows
-   of two on anything wider than a phone. */
+   portrait one); three or four are two by two, the leaderboard taking the
+   fourth cell when there are three; five to eight are four by two on a big
+   screen, two by four on a smaller one. */
 .boards {
   flex: 1 1 0;
   min-height: 0;
   display: grid;
-  gap: clamp(12px, 2vw, max(32px, 3vh));
+  gap: clamp(12px, 1.6vw, max(28px, 2.6vh));
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
 }
-.boards.two, .boards.four { grid-template-rows: none; grid-auto-rows: minmax(0, 1fr); }
+.boards.two, .boards.four, .boards.eight { grid-template-rows: none; grid-auto-rows: minmax(0, 1fr); }
 @media (min-width: 700px) {
-  .boards.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .boards.four, .boards.eight { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (min-width: 700px) and (orientation: landscape) {
   .boards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+@media (min-width: 1200px) and (orientation: landscape) {
+  .boards.eight { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 /* A phone stacks them: two share the screen, four scroll, two to a screen. */
 @media (max-width: 699px) {
-  .boards.four { flex: none; grid-auto-rows: 42svh; }
+  .boards.four, .boards.eight { flex: none; grid-auto-rows: 42svh; }
 }
 .board {
   container-type: size;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   min-width: 0;
   min-height: 0;
-  padding: max(12px, 2vh);
-  border-radius: 24px;
-  background: var(--ink-2);
+  padding: max(14px, 2.4vh) max(16px, 3.6vh) max(14px, 2.6vh);
+  border-radius: clamp(24px, 3.7vh, 40px);
+  background: var(--card);
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
-.boards.four .board { padding: max(8px, 1.2vh); }
+.boards.four .board, .boards.eight .board { padding: max(10px, 1.8vh) max(12px, 2.4vh) max(10px, 2vh); }
+.boards.eight .board { border-radius: clamp(20px, 3vh, 32px); }
 /* The space between the board's lines is a share of the board too. */
-.board > * + * { margin-top: 2.2cqh; }
+.board > * + * { margin-top: 2.4cqh; }
 
-/* On the board, sizes are shares of the board's own height (cqh) and width
-   (cqw): the call takes about a third of the height, as long as "11-10-2"
-   still fits across. */
+/* The line over the call: Live with its dot, the game of a match, Game
+   point, and the clock at the far end. Sizes are shares of the board's own
+   height (cqh) and width (cqw). */
 .board-top {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 0.15em 0.45em;
+  gap: 0.15em 0.55em;
   min-height: 1.4em;
-  font-size: min(4.4cqh, 5cqw);
-  font-weight: 700;
-  color: var(--muted);
+  font-size: min(5.2cqh, 5.4cqw);
+  font-weight: 600;
+  color: var(--text2);
 }
 .board-top > span { white-space: nowrap; }
+.board-top .live-mark { display: inline-flex; align-items: center; gap: 0.45em; color: var(--text2); }
+.board-top .live-mark::before {
+  content: "";
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: var(--live);
+  animation: breathe 1.2s ease-in-out infinite alternate;
+}
+.board-top .clock { margin-left: auto; color: var(--ink); font-variant-numeric: tabular-nums; }
 .board-top .games b { font-weight: 800; }
 .board-top .games .a { color: var(--team-a); }
 .board-top .games .b { color: var(--team-b); }
+/* Game point and match point: quiet tags in the fill. */
 .tag {
   padding: 0.15em 0.7em;
   border-radius: 999px;
-  background: var(--ball);
-  color: var(--ink);
-  font-weight: 800;
+  background: var(--fill);
+  color: var(--label);
+  font-weight: 700;
 }
 
+/* The call: the numbers in ink, the dashes in the third gray with room on
+   each side, so the three numbers read as three numbers. */
 .call {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.14em;
   text-align: center;
-  font-size: min(36cqh, 26cqw);
-  font-weight: 900;
+  font-size: min(34cqh, 24cqw);
+  color: var(--ink);
   white-space: nowrap;
   line-height: 0.95;
-  letter-spacing: -0.02em;
   /* Proportional digits: tabular ones leave "11-3" with gaps around the 1s. */
   font-variant-numeric: proportional-nums;
 }
-.final .call { font-size: min(28cqh, 26cqw); }
+.call .dash { color: var(--dash); font-weight: 800; }
+/* A final is a little smaller, with the losing score in the secondary gray. */
+.final .call { font-size: min(28cqh, 24cqw); }
+.final .call .lost { color: var(--text2); }
 
-.server {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Under the call: the winners on a final, or "Starting…" before the first
+   serve. Nothing while a game is on: the ball beside the server says it. */
+.line {
   text-align: center;
-  gap: 0.4em;
-  font-size: min(4.8cqh, 7cqw);
-  font-weight: 700;
+  font-size: min(5cqh, 7cqw);
+  font-weight: 600;
+  color: var(--label);
   min-height: 1.4em;
 }
+.line:empty { display: none; }
+
+/* The ball: Jared's render, in the slot before the server and in the footer. */
 .ball {
   display: inline-block;
   width: 0.8em;
   height: 0.8em;
-  border-radius: 50%;
-  background: var(--ball);
-  box-shadow: 0 0 0.35em rgba(217, 242, 79, 0.55);
+  background: url("../icons/ball.png") center / contain no-repeat;
   flex: none;
 }
 
-.teams { display: flex; flex-direction: column; gap: 1.4cqh; }
+/* The teams: a stripe in the team's fill, the players one per line with the
+   ball's slot before each (always there, so names line up whoever is
+   serving), and the score on the right. */
+.teams { display: flex; flex-direction: column; gap: 2.6cqh; }
 .team {
   flex: 1 1 0;
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 0.5em;
-  padding: 0.4em 0.6em;
-  border-radius: 18px;
-  background: rgba(236, 238, 248, 0.05);
+  gap: 0.6em;
   font-size: min(6cqh, 8.6cqw);
-  transition: background 0.2s;
 }
-.team.a.serving { background: rgba(74, 125, 240, 0.22); }
-.team.b.serving { background: rgba(240, 106, 69, 0.22); }
-.team.won { outline: 3px solid var(--ball); }
-/* A team's names stack, one per line, so each reads on its own. */
-.names { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1em; }
+.stripe {
+  flex: none;
+  align-self: stretch;
+  width: 0.3em;
+  border-radius: 0.15em;
+  min-height: 1.6em;
+}
+.team.a .stripe { background: var(--team-a); }
+.team.b .stripe { background: var(--team-b); }
+.names { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.12em; }
 .name {
   display: flex;
   align-items: center;
-  gap: 0.35em;
+  gap: 0.4em;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 500;
+  font-weight: 600;
+  line-height: 1.25;
 }
 /* On a narrow board the names shrink before the row does, so "Maximiliana F."
    still fits beside the score. */
 .team .name { font-size: min(1em, 8cqw); }
-.team.serving .name { font-weight: 700; }
 /* A short, wide board (a phone on its side): the two teams side by side, so
    the names can be twice the size. */
 @container (aspect-ratio > 13 / 5) {
@@ -234,66 +291,70 @@ body {
   .team { font-size: min(12cqh, 4.2cqw); }
   .team .name { font-size: min(1em, 3.9cqw); }
 }
-/* The Ball's slot is always there, so names line up whoever is serving. */
-.name .slot { flex: none; width: 0.7em; display: flex; align-items: center; }
-.name .ball { width: 0.55em; height: 0.55em; }
+.name .slot { flex: none; width: 0.85em; display: flex; align-items: center; }
+.name .ball { width: 0.85em; height: 0.85em; }
 .points {
   flex: none;
-  min-width: 1.6em;
+  min-width: 1.4em;
   text-align: right;
-  font-size: 1.5em;
+  font-size: 2.3em;
   line-height: 1;
-  font-weight: 900;
   font-variant-numeric: tabular-nums;
+  color: var(--ink);
 }
-.team.a .points { color: var(--team-a); }
-.team.b .points { color: var(--team-b); }
+.points.trail { color: var(--text2); }
+/* The winners on a final: their score stays in ink, the losers' is gray. */
+.team.won .points { color: var(--ink); }
 
 .more {
   flex: none;
   text-align: center;
-  color: var(--muted);
+  color: var(--text2);
   font-size: max(14px, 2.4vh);
   font-weight: 600;
   padding: 8px 0;
 }
 
-/* Standings between games: as many rows as fit, in the biggest type that
-   fits. fitRows() in live.js sets --row-size and drops rows that don't fit. */
+/* The leaderboard: between games it fills the screen as a board; beside
+   three live games it takes the fourth cell. As many rows as fit, in the
+   biggest type that fits: fitRows() in live.js sets --row-size and drops
+   rows that don't fit. */
 .standings {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  justify-content: flex-start;
 }
+.boards .standings { padding-bottom: max(8px, 1.4vh); }
 .standings-title {
   flex: none;
-  font-size: max(14px, 2.4vh);
-  font-weight: 700;
-  color: var(--muted);
-  padding: 0 0 max(6px, 1vh);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: max(15px, 2.6vh);
+  color: var(--text2);
+  padding: 0 0 max(8px, 1.4vh);
 }
-.rows { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: max(4px, 0.8vh); overflow: hidden; }
+.boards .standings .standings-title { font-size: min(5.2cqh, 5.4cqw); }
+.standings-title .key { font-family: var(--font); font-weight: 600; letter-spacing: 0; font-size: 0.9em; }
+.rows { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: max(2px, 0.4vh); overflow: hidden; }
 .row {
   flex: none;
   display: grid;
-  grid-template-columns: 1.5em minmax(0, 1fr) auto auto;
+  grid-template-columns: 1.6em minmax(0, 1fr) auto auto;
   align-items: center;
   gap: clamp(10px, 1.5vw, 0.8em);
-  padding: 0.4em clamp(14px, 2vw, 0.9em);
-  border-radius: 14px;
-  background: rgba(236, 238, 248, 0.05);
+  padding: 0.3em 0.2em;
   font-size: var(--row-size, max(16px, 3vh));
+  min-height: 1.75em;
 }
-.row.first { background: rgba(217, 242, 79, 0.14); }
-.rank { font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
-.row.first .rank { color: var(--ball); }
+.rank { color: var(--text2); font-variant-numeric: tabular-nums; }
 .row .name { font-weight: 600; }
-.number { font-weight: 900; font-variant-numeric: tabular-nums; min-width: 2.6em; text-align: right; }
-.number.up { color: var(--ball); }
-.number.down { color: var(--team-b); }
-.record { color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; min-width: 3em; text-align: right; }
+.number { font-variant-numeric: tabular-nums; min-width: 2.6em; text-align: right; font-size: 1.15em; color: var(--label); }
+.number.up { color: var(--up); }
+.record { color: var(--text2); font-weight: 600; font-variant-numeric: tabular-nums; min-width: 3em; text-align: right; font-size: 0.92em; }
 
 /* Messages: no game, a dead link, not set up. */
 .message {
@@ -307,54 +368,51 @@ body {
   padding: 24px;
   font-size: max(18px, 3.4vh);
   font-weight: 700;
+  color: var(--ink);
 }
 .message p { margin: 0; }
-.message .sub { font-size: 0.6em; font-weight: 500; color: var(--muted); max-width: 32em; }
-.message code { font-family: ui-monospace, Menlo, monospace; font-size: 0.8em; color: var(--paper); overflow-wrap: anywhere; }
+.message .sub { font-family: var(--font); font-weight: 500; font-size: 0.6em; color: var(--text2); max-width: 32em; letter-spacing: 0; }
+.message code { font-family: ui-monospace, Menlo, monospace; font-size: 0.8em; color: var(--label); overflow-wrap: anywhere; }
 
-/* The QR code, in the footer's right corner, on screens with room for it.
-   It's part of the footer, so the boards above make room for it. */
+/* The footer: the ball, the wordmark and "Get the app" on the left; the QR
+   code with its caption on the right, on screens with room for it. */
+.foot {
+  font-size: max(13px, 2.2vh);
+  color: var(--text2);
+}
+.brand { display: flex; align-items: center; gap: 0.7em; min-width: 0; }
+.brand .ball { width: 1.35em; height: 1.35em; }
+.wordmark { font-size: 1.1em; color: var(--ink); }
+.get-app { font-weight: 500; }
 .qr {
   flex: none;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  width: max(96px, 15vh);
+  gap: max(10px, 1.4vh);
+  max-width: 60%;
 }
-body.has-qr .foot { align-items: flex-end; }
 .qr[hidden] { display: none; }
-/* A TV or a laptop: wide enough for the footer to be a column at the right,
-   the QR code at its foot with the wordmark above it. The boards give up
-   width they have to spare instead of height they need. */
-@media (min-aspect-ratio: 5 / 4) {
-  body.has-qr {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-  body.has-qr .top { grid-column: 1 / -1; }
-  body.has-qr .main { padding-right: 0; padding-bottom: max(10px, 2vh); }
-  body.has-qr .foot {
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    gap: max(6px, 1vh);
-    padding: 0 var(--side) max(10px, 2vh) clamp(12px, 2vw, max(32px, 3vh));
-  }
+.qr-code {
+  flex: none;
+  width: max(80px, 9.6vh);
+  padding: max(4px, 0.7vh);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(27, 31, 59, 0.08);
+}
+.qr-code svg { display: block; width: 100%; height: auto; }
+.qr-caption {
+  font-size: max(12px, 1.9vh);
+  font-weight: 500;
+  color: var(--text2);
+  text-align: right;
+  line-height: 1.3;
+  max-width: 11em;
 }
 /* A TV: big enough to scan from the sofa, about 15 cm on a 55-inch screen. */
 @media (min-width: 1600px) {
-  .qr { width: max(96px, 22vh); }
-}
-.qr-code { width: 100%; border-radius: 10px; overflow: hidden; background: #fff; }
-.qr-code svg { display: block; width: 100%; height: auto; }
-.qr-caption {
-  font-size: max(11px, 1.7vh);
-  font-weight: 700;
-  color: var(--muted);
-  text-align: center;
-  white-space: nowrap;
+  .qr-code { width: max(96px, 14vh); }
 }
 
 /* Reconnecting, over whatever was last shown. */
@@ -365,7 +423,7 @@ body.has-qr .foot { align-items: flex-end; }
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(27, 31, 59, 0.6);
+  background: rgba(27, 31, 59, 0.35);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
@@ -373,22 +431,21 @@ body.has-qr .foot { align-items: flex-end; }
 .overlay-card {
   padding: 0.6em 1.2em;
   border-radius: 999px;
-  background: var(--ink-2);
+  background: var(--ink);
+  color: var(--card);
   font-size: max(16px, 2.8vh);
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
+  box-shadow: 0 6px 16px rgba(27, 31, 59, 0.18);
 }
 
 /* Phones. */
 @media (max-width: 600px) {
-  .board { padding: 14px; }
+  .board { padding: 14px 16px; }
   .top { flex-direction: column; align-items: flex-start; gap: 2px; }
   .group-name { -webkit-line-clamp: 3; }
 }
-/* The QR's caption says it; the footer's doesn't need to. */
-body.has-qr .get-app { display: none; }
-/* Reduced motion: the Live dot holds still and the lit row just switches. */
+/* Reduced motion: the Live dot holds still. */
 @media (prefers-reduced-motion: reduce) {
-  .status.live::before { animation: none; }
-  .team { transition: none; }
+  .status.live::before, .board-top .live-mark::before { animation: none; }
 }
