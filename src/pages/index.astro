@@ -12,6 +12,51 @@ const guides = (await getCollection('guides'))
   .slice(0, 5);
 const ctaHref = APP_STORE_URL || '/waitlist/';
 const ctaLabel = APP_STORE_URL ? 'Get it on the App Store' : 'Join the waitlist';
+
+// What's in it. Each feature has a filled icon drawn on a 24-point grid, in the
+// style of the stamps above it (DESIGN.md: filled symbols, never emoji).
+const features = [
+  {
+    title: 'Live scoring that knows the rules',
+    body: 'Side-out scoring, the second server, win by two. Undo anything. The call is big enough to read from the other baseline.',
+    icon: '<path fill-rule="evenodd" d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.7 7.2a1.2 1.2 0 00-1.7-1.7L10.5 12l-1.5-1.5a1.2 1.2 0 00-1.7 1.7l2.4 2.4a1.2 1.2 0 001.7 0z"/>',
+  },
+  {
+    title: 'Watching',
+    body: 'Anyone in the group opens the app and sees the game as it happens, with a Live card on the home screen.',
+    icon: '<path fill-rule="evenodd" d="M12 5C7 5 3.3 8.2 1.5 12c1.8 3.8 5.5 7 10.5 7s8.7-3.2 10.5-7C20.7 8.2 17 5 12 5zm0 11a4 4 0 110-8 4 4 0 010 8z"/><circle cx="12" cy="12" r="2"/>',
+  },
+  {
+    title: 'Past games in seconds',
+    body: 'Played without the phone? Tap the faces onto two teams, type the score, done. The rankings update the same way.',
+    icon: '<path fill-rule="evenodd" d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5a1 1 0 10-2 0v5.4l3.3 2.4a1 1 0 101.2-1.6L13 11.4z"/>',
+  },
+  {
+    title: 'Plus/minus rankings',
+    body: 'One number per player, a spread and a win chance before each game, and an explanation of every change after it.',
+    icon: '<rect x="2.5" y="10" width="5.5" height="11.5" rx="1.5"/><rect x="9.25" y="3" width="5.5" height="18.5" rx="1.5"/><rect x="16" y="14" width="5.5" height="7.5" rx="1.5"/>',
+  },
+  {
+    title: 'Apple Watch',
+    body: 'Score from your wrist with Point and Fault, and log a game without taking your phone out of the bag.',
+    icon: '<rect x="6.5" y="1.5" width="11" height="5" rx="1.5"/><rect x="6.5" y="17.5" width="11" height="5" rx="1.5"/><rect x="4.5" y="5.5" width="15" height="13" rx="4"/><rect x="19.5" y="9" width="2.5" height="4.5" rx="1.25"/>',
+  },
+  {
+    title: 'Invite links',
+    body: 'One link brings a new player into your group. They open it, pick which player they are, and they\'re in.',
+    icon: '<g transform="rotate(-45 12 12)"><path fill-rule="evenodd" d="M5 8h7a4 4 0 010 8H5a4 4 0 010-8zm.5 2.6a1.4 1.4 0 000 2.8h6a1.4 1.4 0 000-2.8z"/><path fill-rule="evenodd" d="M12 8h7a4 4 0 010 8h-7a4 4 0 010-8zm.5 2.6a1.4 1.4 0 000 2.8h6a1.4 1.4 0 000-2.8z"/></g>',
+  },
+  {
+    title: 'Doubles pairs and the belt',
+    body: 'A Duos board ranks the pairs. The championship belt goes to whoever beats the holder.',
+    icon: '<rect x="1" y="9" width="22" height="6" rx="2"/><rect x="7" y="5" width="10" height="14" rx="3"/><rect class="cut" x="10" y="8" width="4" height="8" rx="1.2"/>',
+  },
+  {
+    title: 'Handicap games',
+    body: 'The underdog starts with the spread as a head start, so the expected result is a tie. The win counts; nobody\'s number moves.',
+    icon: '<rect x="11" y="3" width="2" height="18" rx="1"/><rect x="7" y="19.5" width="10" height="2.5" rx="1.25"/><rect x="3" y="4.5" width="18" height="2.2" rx="1.1"/><path d="M1 12.5l3.2-6.5 3.2 6.5a3.2 3.2 0 01-6.4 0z"/><path d="M16.6 12.5l3.2-6.5 3.2 6.5a3.2 3.2 0 01-6.4 0z"/>',
+  },
+];
 ---
 
 <Base>
@@ -125,14 +170,13 @@ const ctaLabel = APP_STORE_URL ? 'Get it on the App Store' : 'Join the waitlist'
   <section>
     <h2>What's in it</h2>
     <ul class="features">
-      <li><strong>Live scoring that knows the rules</strong><span>Side-out scoring, the second server, win by two. Undo anything. The call is big enough to read from the other baseline.</span></li>
-      <li><strong>Watching</strong><span>Anyone in the group opens the app and sees the game as it happens, with a Live card on the home screen.</span></li>
-      <li><strong>Past games in seconds</strong><span>Played without the phone? Tap the faces onto two teams, type the score, done. The rankings update the same way.</span></li>
-      <li><strong>Plus/minus rankings</strong><span>One number per player, a spread and a win chance before each game, and an explanation of every change after it.</span></li>
-      <li><strong>Apple Watch</strong><span>Score from your wrist with Point and Fault, and log a game without taking your phone out of the bag.</span></li>
-      <li><strong>Invite links</strong><span>One link brings a new player into your group. They open it, pick which player they are, and they're in.</span></li>
-      <li><strong>Doubles pairs and the belt</strong><span>A Duos board ranks the pairs. The championship belt goes to whoever beats the holder.</span></li>
-      <li><strong>Handicap games</strong><span>The underdog starts with the spread as a head start, so the expected result is a tie. The win counts; nobody's number moves.</span></li>
+      {features.map((f) => (
+        <li>
+          <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" set:html={f.icon} /></span>
+          <strong>{f.title}</strong>
+          <span>{f.body}</span>
+        </li>
+      ))}
     </ul>
     <p class="meta">Free answers <em>"what's the score?"</em> Pro, for the organizer, answers <em>"who should I play next?"</em> and <em>"how do I get better?"</em></p>
   </section>

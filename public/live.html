@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Live — Pickleballers</title>
   <meta name="robots" content="noindex" />
-  <meta name="theme-color" content="#1B1F3B" />
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
   <meta name="description" content="Your group's live score and leaderboard, on any screen." />
   <!-- The link preview in a group chat. The token after the # never reaches
        the server, so the preview can't name the group: it stays generic. -->
@@ -15,6 +16,11 @@
   <meta property="og:description" content="Your group's live score and leaderboard, on any screen." />
   <meta property="og:image" content="https://getpickleballers.app/icons/icon-512.png" />
   <meta name="twitter:card" content="summary" />
+  <!-- The kit's rounded face for numbers and headlines (D-173): SF Pro Rounded
+       on Apple screens, Nunito everywhere else. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap" />
   <link rel="stylesheet" href="css/live.css" />
   <link rel="icon" href="icons/icon-192.png" />
 </head>
@@ -33,12 +39,15 @@
   </header>
   <main id="main" class="main"></main>
   <footer class="foot">
-    <span class="wordmark">Pickleballers</span>
-    <span class="get-app" id="get-app">Get the app</span>
+    <div class="brand">
+      <span class="ball" aria-hidden="true"></span>
+      <span class="wordmark">Pickleballers</span>
+      <span class="get-app" id="get-app">Get the app</span>
+    </div>
     <!-- On a screen big enough: a QR code to scan from across the room. -->
     <aside class="qr" id="qr" hidden>
-      <div class="qr-code" id="qr-code"></div>
       <div class="qr-caption" id="qr-caption"></div>
+      <div class="qr-code" id="qr-code"></div>
     </aside>
   </footer>
   <div id="overlay" class="overlay" hidden><div class="overlay-card" id="overlay-text"></div></div>

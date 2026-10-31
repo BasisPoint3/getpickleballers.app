@@ -283,14 +283,18 @@
     const live = board.matches.filter((m) => currentGame(m));
     if (live.length) {
       lastFinal = null;        // a game is on: the last one's Final is old news
-      setStatus('Live', true);
-      // Up to four games at once, two across; the boards shrink to fit.
-      const shown = live.slice(-4);
-      const count = shown.length > 2 ? 'four' : shown.length > 1 ? 'two' : 'one';
-      els.main.innerHTML = `<div class="boards ${count}">${shown.map((m) => boardHTML(m)).join('')}</div>`
-        + (live.length > 4 ? `<div class="more">and ${live.length - 4} more game${live.length > 5 ? 's' : ''} on</div>` : '');
+      setStatus('Live', true, live.length);
+      // Up to eight games at once: one fills the screen, two sit across,
+      // three or four go two by two (the leaderboard takes the fourth cell
+      // beside three), five to eight four by two; the boards shrink to fit.
+      const shown = live.slice(-8);
+      const count = shown.length > 4 ? 'eight' : shown.length > 2 ? 'four' : shown.length > 1 ? 'two' : 'one';
+      const standings = shown.length === 3 ? standingsHTML(board.standings, true) : '';
+      els.main.innerHTML = `<div class="boards ${count}">${shown.map((m) => boardHTML(m)).join('')}${standings}</div>`
+        + (live.length > 8 ? `<div class="more">and ${live.length - 8} more game${live.length > 9 ? 's' : ''} on</div>` : '');
       startTicking(shown);
       keepAwake(true);
+      if (standings) fitRows();
     } else if (lastFinal && Date.now() - lastFinal.at < 20000) {
       stopTicking();
       setStatus('Final', false);
@@ -306,8 +310,10 @@
     fitText();
   }
 
-  function setStatus(text, live) {
+  // "Live", "Live · 3 games", "Final" or "No game on right now".
+  function setStatus(text, live, count) {
     els.status.textContent = text;
+    if (live && count > 1) els.status.innerHTML = `Live<span class="count">· ${count} games</span>`;
     els.status.classList.toggle('live', live);
   }
 
@@ -324,7 +330,6 @@
       const html = `Live<span class="clock">${elapsed(shown[0])}</span>`;
       if (els.status.innerHTML !== html) els.status.innerHTML = html;
     } else {
-      els.status.textContent = 'Live';
       els.main.querySelectorAll('.board .clock').forEach((el, i) => { if (shown[i]) el.textContent = elapsed(shown[i]); });
     }
   }
@@ -366,19 +371,26 @@
     const wins = { A: 0, B: 0 };
     for (const x of match.games) if (x.winning_team) wins[x.winning_team]++;
     const needed = match.format === 'best_of_5' ? 3 : match.format === 'best_of_3' ? 2 : 1;
+    const dash = '<span class="dash">–</span>';
 
+    // The call: each number its own span, the dashes in the third gray.
     let call;
     if (final) {
       const w = g.winning_team;
-      call = `${score(w)}–${score(w === 'A' ? 'B' : 'A')}`;
+      call = `<span>${score(w)}</span>${dash}<span class="lost">${score(w === 'A' ? 'B' : 'A')}</span>`;
     } else if (!serving) {
-      call = '0-0';
+      call = `<span>0</span>${dash}<span>0</span>`;
     } else {
-      call = `${score(serving)}-${score(receiving)}` + (doubles && g.server_number ? `-${g.server_number}` : '');
+      call = `<span>${score(serving)}</span>${dash}<span>${score(receiving)}</span>` + (doubles && g.server_number ? `${dash}<span>${g.server_number}</span>` : '');
     }
 
+    // The line over the call: Live with its dot (on every board when there
+    // are several), the game of a match, the games won, Game point, and the
+    // clock at the far end.
+    const several = !game && board.matches.filter((m) => currentGame(m)).length > 1;
     let top = '';
-    if (!game && board.matches.filter((m) => currentGame(m)).length > 1) top += '<span class="clock"></span>';
+    if (final) top += '<span>Final</span>';
+    else if (several) top += '<span class="live-mark">Live</span>';
     if (needed > 1) {
       top += `<span>Game ${g.game_number} of ${needed * 2 - 1}</span>`;
       // Games won so far, in the team colors: the rows below say whose is whose.
@@ -388,31 +400,36 @@
       const decides = needed > 1 && wins[serving] + 1 >= needed;
       top += `<span class="tag">${decides ? 'Match point' : 'Game point'}</span>`;
     }
+    if (several) top += '<span class="clock"></span>';
 
-    let serverLine;
+    // Under the call: the winners on a final, "Starting…" before the first
+    // serve; while a game is on, the ball beside the server says it all.
+    let line = '';
     if (final) {
       const w = g.winning_team;
       const decided = wins[w] >= needed;
-      serverLine = `${esc(teamName(team(w)))} ${decided && needed > 1 ? 'win the match' : doubles ? 'win' : 'wins'}`;
+      line = `${esc(teamName(team(w)))} ${decided && needed > 1 ? 'win the match' : doubles ? 'win' : 'wins'}`;
     } else if (!serving) {
-      serverLine = 'Starting…';
-    } else {
-      const server = g.server_player_id && team(serving).find((p) => p.id === g.server_player_id);
-      serverLine = `<span class="ball"></span>${server ? esc(server.name) : `Team ${serving}`} serving`;
+      line = 'Starting…';
     }
 
+    // The leading score in ink, the trailing one in the secondary gray;
+    // tied, both in ink. On a final the losers' is gray.
+    const a = score('A'), b = score('B');
+    const trail = (t) => (final ? g.winning_team !== t : (t === 'A' ? a < b : b < a));
     const row = (t) => {
       const won = final && g.winning_team === t;
       return `<div class="team ${t.toLowerCase()}${!final && serving === t ? ' serving' : ''}${won ? ' won' : ''}">
+        <span class="stripe"></span>
         <div class="names">${team(t).map((p) => `<span class="name"><span class="slot">${!final && g.server_player_id === p.id ? '<span class="ball"></span>' : ''}</span>${esc(p.name)}</span>`).join('')}</div>
-        <div class="points">${score(t)}</div>
+        <div class="points${trail(t) ? ' trail' : ''}">${score(t)}</div>
       </div>`;
     };
 
     return `<section class="board${final ? ' final' : ''}">
-      <div class="board-top">${final ? '<span>Final</span>' : ''}${top}</div>
+      <div class="board-top">${top}</div>
       <div class="call">${call}</div>
-      <div class="server">${serverLine}</div>
+      <div class="line">${line}</div>
       <div class="teams">${row('A')}${row('B')}</div>
     </section>`;
   }
@@ -430,27 +447,40 @@
 
   function teamName(players) { return players.map((p) => p.name).join(' & '); }
 
-  function standingsHTML(rows) {
+  // The leaderboard: the screen between games, or a board beside three live
+  // games (`asBoard`). A number that went up is green with its +; down is
+  // the label color with its −, never red.
+  function standingsHTML(rows, asBoard) {
     if (!rows.length) {
+      if (asBoard) return '<section class="board standings"><div class="standings-title">Leaderboard</div><div class="rows"></div></section>';
       return message('No one is ranked yet.', 'Players show up here after a few games.');
     }
-    return `<div class="standings"><div class="standings-title">Leaderboard</div><div class="rows">${rows.map((r, i) => `
+    const title = '<div class="standings-title"><span>Leaderboard</span><span class="key">+/− · W–L</span></div>';
+    const list = `<div class="rows">${rows.map((r, i) => `
       <div class="row${i === 0 ? ' first' : ''}">
         <span class="rank">${i + 1}</span>
         <span class="name">${esc(r.name)}</span>
-        <span class="number ${r.number > 0 ? 'up' : r.number < 0 ? 'down' : ''}">${plusMinus(r.number)}</span>
+        <span class="number ${r.number > 0 ? 'up' : ''}">${plusMinus(r.number)}</span>
         <span class="record">${r.wins}–${r.losses}</span>
-      </div>`).join('')}</div></div>`;
+      </div>`).join('')}</div>`;
+    return asBoard
+      ? `<section class="board standings">${title}${list}</section>`
+      : `<div class="standings">${title}${list}</div>`;
   }
 
   // The leaderboard in the biggest type that fits: a short list grows (up to
   // twice the base size) while every row still fits and no name is cut; a
   // long one keeps the base size and drops rows from the bottom, never
   // leaving half a row. A name that's still too wide shrinks rather than
-  // being cut.
+  // being cut. Beside three live games the list keeps its base size.
   function fitRows() {
     const list = els.main.querySelector('.rows');
     if (!list || !list.firstElementChild) return;
+    if (list.closest('.board')) {
+      let guard = 200;
+      while (list.scrollHeight > list.clientHeight + 1 && list.children.length > 1 && guard--) list.removeChild(list.lastElementChild);
+      return;
+    }
     const over = () => list.scrollHeight > list.clientHeight + 1;
     const cut = () => [...list.querySelectorAll('.name')].some((n) => n.scrollWidth > n.clientWidth + 1);
     const base = parseFloat(getComputedStyle(list.firstElementChild).fontSize);
@@ -478,12 +508,14 @@
       n.style.fontSize = '';
       if (n.scrollWidth > n.clientWidth + 1) n.style.fontSize = `${Math.max(0.6, (n.clientWidth / n.scrollWidth) * 0.98)}em`;
     }
+    // In px of its own size: an em here would be of the header's 16 px.
     const g = els.name;
     g.style.fontSize = '';
+    const base = parseFloat(getComputedStyle(g).fontSize);
     let k = 1;
-    while ((g.scrollHeight > g.clientHeight + 1 || g.scrollWidth > g.clientWidth + 1) && k > 0.6) {
+    while ((g.scrollHeight > g.clientHeight + 2 || g.scrollWidth > g.clientWidth + 1) && k > 0.6) {
       k -= 0.05;
-      g.style.fontSize = `${k}em`;
+      g.style.fontSize = `${base * k}px`;
     }
   }
 
@@ -560,7 +592,7 @@
         qrFor = target;
       } catch (e) { qr.hidden = true; return; }
     }
-    document.getElementById('qr-caption').textContent = APP_STORE_URL ? 'Get the app' : 'Follow on your phone';
+    document.getElementById('qr-caption').textContent = APP_STORE_URL ? 'Scan to get the app' : 'Scan to follow along on your phone';
     qr.hidden = false;
     document.body.classList.add('has-qr');
   }
