@@ -299,9 +299,12 @@ main { flex: 1; padding: 16px 0 64px; }
 
 /* What is built */
 .features { display: grid; gap: 12px 24px; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); list-style: none; padding: 0; margin: 0 0 1.5em; }
-.features li { padding: 14px 0; border-bottom: 1px solid var(--rule); }
-.features li strong { display: block; font-family: var(--font-display); font-weight: 800; font-size: 18px; margin-bottom: 2px; }
-.features li span { color: var(--muted); }
+.features li { padding: 14px 0; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 2px 14px; align-items: start; }
+.features li strong { display: flex; align-items: center; min-height: 40px; font-family: var(--font-display); font-weight: 800; font-size: 18px; line-height: 1.2; }
+.features li > span:not(.icon) { grid-column: 2; color: var(--muted); }
+.features .icon { grid-row: 1 / span 2; width: 40px; height: 40px; border-radius: 50%; background: var(--fill); color: var(--fg); display: inline-flex; align-items: center; justify-content: center; }
+.features .icon svg { width: 20px; height: 20px; fill: currentColor; }
+.features .icon .cut { fill: var(--fill); }
 
 /* Where it is */
 .status { border-radius: var(--radius); background: var(--ink); color: var(--paper); padding: 32px; margin: 1.5em 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; }
