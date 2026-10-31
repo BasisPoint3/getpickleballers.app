@@ -1,4 +1,8 @@
 ---
+// The landing page: what the app is, the three moments, the after-game show,
+// what is built, where it stands, the guides. Everything described here is
+// built (pickleball-app/docs/BUILD_STATUS.md); the app is in testing, not on
+// the App Store. The pieces of the UI are drawn in HTML from the kit.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { APP_STORE_URL } from '../consts';
@@ -12,33 +16,134 @@ const ctaLabel = APP_STORE_URL ? 'Get it on the App Store' : 'Join the waitlist'
 
 <Base>
   <section class="hero">
-    <p class="eyebrow">iPhone and Apple Watch</p>
-    <h1>The scorekeeper for your pickleball group.</h1>
-    <p class="lede">Log a game in seconds, follow the live score from anywhere, and see one number for every player that says how many points they're worth.</p>
-    <div class="btn-row">
-      <a class="btn primary" href={ctaHref}>{ctaLabel}</a>
-      <a class="btn quiet" href="/guides/">Read the guides</a>
+    <div>
+      <p class="status-pill"><span class="dot" aria-hidden="true"></span>In development · iPhone and Apple Watch</p>
+      <h1>The scorekeeper for your pickleball group.</h1>
+      <p class="lede">Two buttons on the court. The live score on every phone. One number for every player that says how many points they're worth.</p>
+      <div class="btn-row">
+        <a class="btn primary" href={ctaHref}>{ctaLabel}</a>
+        <a class="btn quiet" href="/guides/">Read the guides</a>
+      </div>
+    </div>
+    <div class="phone-wrap" aria-label="The scorer screen">
+      <div class="phone">
+        <div class="bar">
+          <span class="round" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span>
+          <p class="meta">Game 1 · to 11, win by 2</p>
+          <span class="pair">
+            <span class="round" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="round" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg></span>
+          </span>
+        </div>
+        <div class="call"><span class="num"><span>6</span><span class="dash">–</span><span>5</span><span class="dash">–</span><span>2</span></span></div>
+        <div class="teams">
+          <div class="team">
+            <span class="stripe" style="background: var(--court-blue)"></span>
+            <div class="players">
+              <div class="player"><span class="slot"><img src="/icons/ball.png" alt="Serving" /></span><span class="face" style="background:#14865f">LH</span>Lauren H.</div>
+              <div class="player"><span class="slot"></span><span class="face" style="background:#0e7c8c">JJ</span>Jon J.</div>
+            </div>
+            <span class="num">6</span>
+          </div>
+          <div class="team">
+            <span class="stripe" style="background: var(--coral)"></span>
+            <div class="players">
+              <div class="player"><span class="slot"></span><span class="face" style="background:#8a4fd8">MN</span>Magus N.</div>
+              <div class="player"><span class="slot"></span><span class="face" style="background:#b5671b">NJ</span>Noah J.</div>
+            </div>
+            <span class="num muted">5</span>
+          </div>
+        </div>
+        <div class="keys">
+          <span class="key fault">Fault</span>
+          <span class="key point">Point</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="grid">
-    <div class="card">
-      <h3>Score from the court</h3>
-      <p>Two buttons, Point and Fault. The app calls the score, knows who serves next, and never loses the second server.</p>
+  <section class="grid" aria-label="Three moments">
+    <div class="card moment">
+      <div class="demo">
+        <div class="keys"><span class="key fault">Fault</span><span class="key point">Point</span></div>
+      </div>
+      <div>
+        <h3>Score from the court</h3>
+        <p>Two buttons. The app calls the score, knows who serves next and never loses the second server. The ball sits beside whoever is serving.</p>
+      </div>
     </div>
-    <div class="card">
-      <h3>Watch from anywhere</h3>
-      <p>Every tap reaches the other phones in under a second. One link puts the score and the leaderboard on the TV at the courts.</p>
+    <div class="card moment">
+      <div class="demo">
+        <div class="live-head"><span class="dot" aria-hidden="true"></span><strong>Live</strong></div>
+        <div class="team">
+          <span class="stripe" style="background: var(--court-blue)"></span>
+          <div class="players"><div class="player"><span class="slot"><img src="/icons/ball.png" alt="Serving" /></span>Lauren H.</div><div class="player"><span class="slot"></span>Jon J.</div></div>
+          <span class="num">6</span>
+        </div>
+        <div class="team">
+          <span class="stripe" style="background: var(--coral)"></span>
+          <div class="players"><div class="player"><span class="slot"></span>Magus N.</div><div class="player"><span class="slot"></span>Noah J.</div></div>
+          <span class="num muted">5</span>
+        </div>
+      </div>
+      <div>
+        <h3>Watch from anywhere</h3>
+        <p>Every tap reaches the other phones in under a second. Whoever is sitting out follows the game from the bench, or from home.</p>
+      </div>
     </div>
-    <div class="card">
-      <h3>One number per player</h3>
-      <p>Plus/minus: how many points you're worth against your group. A spread before every game, and a story for both teams after it.</p>
+    <div class="card moment">
+      <div class="demo">
+        <div class="row"><span class="rank num">1</span><span class="face" style="background:#14865f">LH<svg class="crown" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11.5" fill="#d9f24f" stroke="#fff" stroke-width="1.5"/><path d="M5.5 15.5l1-7 3.2 2.8L12 6.5l2.3 4.8 3.2-2.8 1 7z" fill="#1b1f3b"/><rect x="5.5" y="16.5" width="13" height="2.2" rx="1.1" fill="#1b1f3b"/></svg></span><span class="name">Lauren H.</span><span class="num up">+4.2</span></div>
+        <div class="row"><span class="rank num">2</span><span class="face" style="background:#8a4fd8">MN</span><span class="name">Magus N.</span><span class="num up">+3.1</span></div>
+        <div class="row"><span class="rank num">3</span><span class="face" style="background:#2b63d9">JC</span><span class="name">Jared C.</span><span class="num">−0.8</span></div>
+      </div>
+      <div>
+        <h3>One number per player</h3>
+        <p>Plus/minus: how many points you're worth against your group. A spread before every game, and the story of what happened after it.</p>
+      </div>
     </div>
   </section>
 
-  <section class="prose">
-    <p>Free answers <em>"what's the score?"</em> Pro answers <em>"who should I play next?"</em> and <em>"how do I get better?"</em></p>
-    <p class="meta">In testing with one league now. Coming to the App Store.</p>
+  <section class="show" aria-label="After the game">
+    <div class="stage">
+      <svg class="confetti" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true"><g><rect x="30" y="30" width="8" height="14" rx="2" fill="#2b63d9" transform="rotate(20 34 37)"/><rect x="90" y="10" width="8" height="14" rx="2" fill="#d9f24f" transform="rotate(-30 94 17)"/><rect x="280" y="14" width="8" height="14" rx="2" fill="#2b63d9" transform="rotate(50 284 21)"/><rect x="350" y="40" width="8" height="14" rx="2" fill="#d9f24f" transform="rotate(-15 354 47)"/><rect x="60" y="150" width="8" height="14" rx="2" fill="#d9f24f" transform="rotate(35 64 157)"/><rect x="330" y="150" width="8" height="14" rx="2" fill="#2b63d9" transform="rotate(-40 334 157)"/><rect x="160" y="6" width="8" height="14" rx="2" fill="#2b63d9" transform="rotate(10 164 13)"/><rect x="240" y="170" width="8" height="14" rx="2" fill="#d9f24f" transform="rotate(-25 244 177)"/><rect x="20" y="100" width="8" height="14" rx="2" fill="#2b63d9" transform="rotate(60 24 107)"/><rect x="370" y="100" width="8" height="14" rx="2" fill="#d9f24f" transform="rotate(-50 374 107)"/></g></svg>
+      <span class="stamp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 1.5L3.5 13.5h6.2L8 22.5l12.5-13h-6.5z" fill="#D9F24F" stroke="#D9F24F" stroke-width="1.2" stroke-linejoin="round"/></svg>UPSET!</span>
+      <p class="meta" style="margin:0;position:relative">Lauren H. &amp; Jon J. beat a team favored by 3.</p>
+    </div>
+    <div>
+      <h2>Every game has a story.</h2>
+      <p>Win as the underdog and the app says so. Lose by less than expected and it says that too. Beat the spread, moral victory, a new number one: a stamp, a burst of confetti, and then back to the court.</p>
+      <p>It never jokes about a low number. Whoever is at the bottom of the board gets the same celebrations as whoever is on top.</p>
+      <div class="stamps" aria-label="The stamps">
+        <span class="stamp small"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#D9F24F" stroke-width="3"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="#D9F24F" stroke-width="3"/><circle cx="12" cy="12" r="1.2" fill="#D9F24F"/></svg>BEAT THE SPREAD</span>
+        <span class="stamp small"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20.5c0-5 2.4-8.4 6-9.6V8.5a2.5 2.5 0 015 0v2c3.2.9 5.5 3.2 5.5 6.5v3.5z" fill="#D9F24F"/><rect x="13.5" y="3.5" width="4" height="5.5" rx="2" fill="#D9F24F"/></svg>MORAL VICTORY</span>
+        <span class="stamp small"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 16.5l1.2-9 4 3.6L12 4.5l3.3 6.6 4-3.6 1.2 9z" fill="#D9F24F"/><rect x="3.5" y="17.8" width="17" height="3" rx="1.5" fill="#D9F24F"/></svg>NEW #1</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What's in it</h2>
+    <ul class="features">
+      <li><strong>Live scoring that knows the rules</strong><span>Side-out scoring, the second server, win by two. Undo anything. The call is big enough to read from the other baseline.</span></li>
+      <li><strong>Watching</strong><span>Anyone in the group opens the app and sees the game as it happens, with a Live card on the home screen.</span></li>
+      <li><strong>Past games in seconds</strong><span>Played without the phone? Tap the faces onto two teams, type the score, done. The rankings update the same way.</span></li>
+      <li><strong>Plus/minus rankings</strong><span>One number per player, a spread and a win chance before each game, and an explanation of every change after it.</span></li>
+      <li><strong>Apple Watch</strong><span>Score from your wrist with Point and Fault, and log a game without taking your phone out of the bag.</span></li>
+      <li><strong>Invite links</strong><span>One link brings a new player into your group. They open it, pick which player they are, and they're in.</span></li>
+      <li><strong>Doubles pairs and the belt</strong><span>A Duos board ranks the pairs. The championship belt goes to whoever beats the holder.</span></li>
+      <li><strong>Handicap games</strong><span>The underdog starts with the spread as a head start, so the expected result is a tie. The win counts; nobody's number moves.</span></li>
+    </ul>
+    <p class="meta">Free answers <em>"what's the score?"</em> Pro, for the organizer, answers <em>"who should I play next?"</em> and <em>"how do I get better?"</em></p>
+  </section>
+
+  <section class="status" aria-label="Where it is">
+    <div>
+      <h2>Where it is</h2>
+      <p>Pickleballers is in testing with one league right now, on TestFlight. The scoring, the rankings and the Watch app are built; the look you see here is going in next.</p>
+      <p>It comes to the App Store when the league stops using a spreadsheet.</p>
+    </div>
+    <a class="btn primary" href={ctaHref}>{ctaLabel}</a>
   </section>
 
   {guides.length > 0 && (

@@ -26,22 +26,23 @@ const year = new Date().getFullYear();
     <link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#121528" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_TITLE} />
     <meta property="og:title" content={title ?? SITE_TITLE} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/icons/icon-512.png', Astro.site)} />
     <meta name="twitter:card" content="summary" />
   </head>
   <body>
     <header class="site-header">
       <div class="wrap">
-        <a class="wordmark" href="/"><span class="ball" aria-hidden="true"></span>{SITE_TITLE}</a>
+        <a class="wordmark" href="/"><img src="/icons/ball.png" alt="" width="28" height="28" />{SITE_TITLE}</a>
         <nav class="nav" aria-label="Site">
           <a href="/guides/">Guides</a>
-          <a href="/waitlist/">Get the app</a>
+          <a class="nav-cta" href="/waitlist/">Get the app</a>
         </nav>
       </div>
     </header>
