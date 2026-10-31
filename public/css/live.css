@@ -284,11 +284,13 @@ body {
 /* On a narrow board the names shrink before the row does, so "Maximiliana F."
    still fits beside the score. */
 .team .name { font-size: min(1em, 8cqw); }
-/* A short, wide board (a phone on its side): the two teams side by side, so
-   the names can be twice the size. */
+/* A short, wide board (a phone on its side, a short window): the teams
+   still stack, one under the other, as on every other screen (the kit's
+   board is one shape); the names take a bigger share of the height, since
+   the width has room for them. */
 @container (aspect-ratio > 13 / 5) {
-  .teams { flex-direction: row; gap: 2cqw; }
-  .team { font-size: min(12cqh, 4.2cqw); }
+  .teams { gap: 1.6cqh; }
+  .team { font-size: min(8cqh, 4.2cqw); }
   .team .name { font-size: min(1em, 3.9cqw); }
 }
 .name .slot { flex: none; width: 0.85em; display: flex; align-items: center; }
