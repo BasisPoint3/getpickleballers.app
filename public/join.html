@@ -2,43 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Join your group — Pickleballers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>You're invited — Pickleballers</title>
   <meta name="robots" content="noindex" />
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="icon" href="icons/icon-192.png" />
   <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+  <meta name="description" content="Join your pickleball group. Follow the score, see the rankings, and find your own number." />
+  <!-- The link preview in a text. The token after the # never reaches the
+       server, so the preview can't name the group: it stays generic. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Pickleballers" />
+  <meta property="og:title" content="You're invited · Pickleballers" />
+  <meta property="og:description" content="Join your pickleball group. Follow the score, see the rankings, and find your own number." />
+  <meta property="og:image" content="https://getpickleballers.app/icons/icon-512.png" />
+  <meta name="twitter:card" content="summary" />
+  <!-- The kit's rounded face for headlines (D-173): SF Pro Rounded on Apple
+       screens, Nunito everywhere else. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap" />
+  <link rel="stylesheet" href="css/join.css" />
+  <link rel="icon" href="icons/icon-192.png" />
 </head>
 <body>
   <!--
     Invite links for the iPhone app (D-58). The app shares
-    join.html#<token>; this page hands the token to the app through
-    pickleballers://join/<token>. The token stays after the #, so it never
-    reaches this server. Not part of the PWA, and not linked from it.
+    join.html#<token>, as a link or as a QR code (D-252); this page hands
+    the token to the app through pickleballers://join/<token>. The token
+    stays after the #, so it never reaches this server.
+
+    It wears the app's kit (pickleball-app/docs/DESIGN_SYSTEM.md, D-173) and
+    is laid out as the app's own Join sheet (D-253): the ball, the headline,
+    one line, the one yellow button. Under it, for someone without the app,
+    the steps on a card.
   -->
-  <header class="top-bar"><h1>Join your group</h1></header>
   <main>
-    <div id="ready">
-      <p>You've been invited to a pickleball group on <strong>Pickleballers</strong>, an iPhone app for logging games, following the score and seeing where you stand.</p>
-      <div class="button-row">
-        <a class="btn" id="open-app" href="#">Open in Pickleballers</a>
+    <section id="ready" class="invite">
+      <div class="mascot" aria-hidden="true">
+        <img class="ball" src="icons/ball.png" alt="" width="96" height="96" />
+        <span class="ball-shadow"></span>
       </div>
-      <h2>Don't have the app yet?</h2>
-      <p class="field-help">
-        Install it from the TestFlight invite the person who sent this link gave you.
-        Then come back and tap <strong>Open in Pickleballers</strong>, or copy the link
-        and paste it on the app's first screen under <strong>I have an invite link</strong>.
-      </p>
-      <div class="button-row">
-        <button type="button" class="btn secondary" id="copy-link">Copy invite link</button>
+      <h1>You're invited</h1>
+      <p class="lead">Join your pickleball group on Pickleballers. Follow the score, see the rankings, and find your own number.</p>
+
+      <a class="pill hero" id="open-app" href="#">Open in Pickleballers</a>
+      <p id="no-app" class="note" role="status" hidden>Nothing opened? Get the app first. The steps are below.</p>
+
+      <div class="card" id="steps">
+        <h2>Don't have the app yet?</h2>
+        <ol>
+          <li>
+            <span class="step-text">Get Pickleballers on your iPhone.
+              <span id="testflight-note">It's in TestFlight for now, so ask the person who invited you for the TestFlight invite.</span>
+            </span>
+            <a class="pill primary" id="get-app" href="#" hidden>Get the App</a>
+          </li>
+          <li><span class="step-text">Open it and sign in.</span></li>
+          <li><span class="step-text">Come back to this link and tap <strong>Open in Pickleballers</strong>. Or copy the link and paste it in the app under <strong>Join with an Invite Link</strong>.</span></li>
+        </ol>
+        <button type="button" class="pill tonal" id="copy-link">Copy Invite Link</button>
+        <p id="copied" class="note" role="status" hidden>Copied. Paste it in the app.</p>
       </div>
-      <div id="copied" class="status" style="display: none">Copied. Paste it in the app.</div>
-    </div>
-    <div id="broken" class="status" style="display: none">
-      This invite link isn't complete. Ask the person who sent it to send it again.
-    </div>
+    </section>
+
+    <section id="broken" class="invite" hidden>
+      <div class="mascot" aria-hidden="true">
+        <img class="ball" src="icons/ball.png" alt="" width="96" height="96" />
+        <span class="ball-shadow"></span>
+      </div>
+      <h1>This link isn't complete</h1>
+      <p class="lead">Ask the person who sent it to send it again.</p>
+    </section>
   </main>
+
+  <footer>
+    <a class="brand" href="/">
+      <img class="ball" src="icons/ball.png" alt="" width="22" height="22" />
+      <span class="wordmark">Pickleballers</span>
+    </a>
+  </footer>
   <script src="js/join.js"></script>
 </body>
 </html>

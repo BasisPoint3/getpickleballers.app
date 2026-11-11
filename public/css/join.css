@@ -1,0 +1,220 @@
+/* The invite page in the kit, v2 (pickleball-app/docs/DESIGN_SYSTEM.md,
+   D-173), laid out as the app's own Join sheet: the grouped ground, the
+   ball at 96 with its shadow, the headline in SF Pro Rounded heavy (Nunito
+   where there is no SF), one line in the secondary gray, and the screen's
+   one hero pill in the ball yellow. The steps for someone without the app
+   sit on a white card with 24 px corners. Pills are capsules, 52 px tall,
+   semibold 17 px, and squish when pressed, as in the app. Dark follows the
+   phone's dark values (black, a #1C1C1E card). The tokens are live.css's. */
+:root {
+  --ground: #F2F2F7;
+  --card: #FFFFFF;
+  --fill: #E9E9EC;
+  --hairline: rgba(27, 31, 59, 0.04);
+  --ink: #1B1F3B;
+  --label: #000000;
+  --text2: #6C6C70;
+  --ball: #D9F24F;
+  --team-a: #2B63D9;
+  --shadow: 0 6px 24px rgba(27, 31, 59, 0.08), 0 0 0 1px var(--hairline);
+  --pill-shadow: 0 6px 16px rgba(27, 31, 59, 0.16);
+  --font: -apple-system, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+  --rounded: ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #000000;
+    --card: #1C1C1E;
+    --fill: #2A2A2D;
+    --hairline: rgba(255, 255, 255, 0.06);
+    --ink: #ECEEF8;
+    --label: #FFFFFF;
+    --text2: #98989F;
+    --shadow: none;
+    --pill-shadow: none;
+  }
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ground);
+  color: var(--label);
+  font: 17px/1.4 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 40px max(20px, env(safe-area-inset-right)) 12px max(20px, env(safe-area-inset-left));
+}
+.invite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* The ball at rest, as on the app's Join sheet: the render over a soft
+   ellipse of ink. */
+.mascot {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  margin-bottom: 8px;
+}
+.mascot .ball {
+  position: absolute;
+  left: 10px;
+  top: 0;
+  width: 96px;
+  height: 96px;
+}
+.ball-shadow {
+  position: absolute;
+  left: 12px;
+  bottom: 2px;
+  width: 92px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0.28;
+  z-index: -1;
+}
+@media (prefers-color-scheme: dark) {
+  .ball-shadow { background: #000; opacity: 0; }
+}
+
+h1, h2, .wordmark {
+  font-family: var(--rounded);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+h1 {
+  margin: 8px 0 0;
+  font-size: 34px;
+  line-height: 1.15;
+}
+.lead {
+  margin: 12px 0 0;
+  color: var(--text2);
+  max-width: 34ch;
+}
+
+/* Pills: the app's capsules. One hero per screen, in the ball yellow with
+   ink words; a primary in Team A's blue; a tonal one in the fill. */
+.pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 24px;
+  border: 0;
+  border-radius: 999px;
+  font: 600 17px/1.2 var(--font);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 150ms ease-out, filter 150ms ease-out;
+}
+.pill:active { transform: scale(0.96); filter: brightness(0.94); }
+.pill:focus-visible { outline: 3px solid var(--team-a); outline-offset: 3px; }
+.pill.hero { background: var(--ball); color: #1B1F3B; box-shadow: var(--pill-shadow); }
+.pill.primary { background: var(--team-a); color: #FFFFFF; }
+.pill.tonal { background: var(--fill); color: var(--label); }
+.invite > .pill.hero { margin-top: 28px; }
+
+.note {
+  margin: 12px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text2);
+}
+
+/* The steps, for someone without the app: a card on the ground. */
+.card {
+  width: 100%;
+  margin-top: 28px;
+  padding: 20px;
+  border-radius: 24px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+.card.nudge { animation: nudge 600ms ease-out; }
+@keyframes nudge {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+ol {
+  list-style: none;
+  counter-reset: step;
+  margin: 16px 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 40px;
+  min-height: 28px;
+}
+/* The step's number in a circle of the fill, in the rounded face. */
+li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--fill);
+  color: var(--label);
+  font: 800 15px/28px var(--rounded);
+  text-align: center;
+}
+.step-text { display: block; }
+li .pill { margin-top: 12px; }
+strong { font-weight: 600; }
+.card .note { text-align: center; }
+
+footer {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  padding: 20px 20px max(20px, env(safe-area-inset-bottom));
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.brand .ball { width: 22px; height: 22px; }
+.wordmark { font-size: 17px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pill { transition: none; }
+  .card.nudge { animation: none; }
+}

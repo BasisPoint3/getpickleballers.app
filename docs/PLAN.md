@@ -74,7 +74,7 @@ Its own repo, built with Astro and published to GitHub Pages by `.github/workflo
 | :-- | :-- | :-- |
 | `/` | The landing page: one line of what the app is, three moments, the Free/Pro sentence, the CTA | A demo group's live board joins it once the production Supabase project exists |
 | `/guides/` and `/guides/<slug>/` | The index, newest first, and each guide | The loop writes here |
-| `/join#<token>` | The app's invite page, byte for byte from the app's history (`public/join.html`) | The token after `#` never reaches a server |
+| `/join#<token>` | The app's invite page (`public/join.html`), from the app's history and since 2026-11-11 in the app's kit, laid out as its Join sheet (D-253 in the app's `docs/DECISIONS.md`) | The token after `#` never reaches a server |
 | `/live#<token>` | The app's live score page for a TV or laptop (`public/live.html`) | Its Supabase address stays empty until production exists |
 | `/privacy/`, `/support/` | What the app stores; how to reach Jared | The App Store needs both URLs |
 | `/waitlist/` | The CTA's target until there is a store page | A hosted form (Tally) once it exists; a `waitlist` table in Supabase later |
